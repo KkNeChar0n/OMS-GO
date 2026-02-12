@@ -1,0 +1,43 @@
+# 编译后的可执行文件
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# 测试二进制文件
+*.test
+
+# 输出文件
+*.out
+
+# Go workspace file
+go.work
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 临时文件
+nul
+tmp/
+temp/
+
+# 前端构建产物
+frontend-dist/
+node_modules/
+dist/
+
+# Claude临时文件
+.claude/
+
+# 日志文件
+*.log
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
