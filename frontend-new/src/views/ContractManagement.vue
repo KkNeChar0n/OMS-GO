@@ -6,7 +6,7 @@
     <div v-if="mounted">
       <div class="page-header">
         <h1>合同管理</h1>
-        <button v-if="hasPermission('add_contract')" class="add-btn" @click="openAddModal">
+        <button v-if="hasPermission('add_contract')" class="add-btn" @click="openAddDrawer">
           新增合同
         </button>
       </div>
@@ -102,18 +102,8 @@
               <button
                 v-if="contract.signature_form == 1"
                 class="view-btn"
-                @click="openDetailModal(contract)"
+                @click="openDetailDrawer(contract)"
               >详情</button>
-              <button
-                v-if="contract.status === 0"
-                class="delete-btn"
-                @click="handleRevoke(contract)"
-              >撤销</button>
-              <button
-                v-if="contract.signature_form == 1 && contract.status === 50"
-                class="disable-btn"
-                @click="openTerminateModal(contract)"
-              >中止合作</button>
             </td>
           </tr>
         </tbody>
@@ -126,42 +116,51 @@
         @change="handlePageChange"
       />
 
-      <!-- 新增合同弹窗 -->
-      <Modal
-        :show="showAddModal"
+      <!-- 新增合同抽屉 -->
+      <Drawer
+        :show="showAddDrawer"
         title="新增合同"
-        @close="closeAddModal"
+        @close="closeAddDrawer"
         @confirm="handleSubmit"
       >
-        <div class="form-group">
-          <label for="contractStudent">学生姓名 <span class="required">*</span></label>
-          <select id="contractStudent" v-model="formData.student_id" @change="handleStudentChange">
-            <option value="">请选择学生</option>
-            <option v-for="student in activeStudents" :key="student.id" :value="student.id">
-              {{ student.student_name }}
-            </option>
-          </select>
+        <!-- 第一行：两列布局 - 学生姓名 + UID -->
+        <div class="form-group-row">
+          <div class="form-group-col">
+            <label for="contractStudent">学生姓名 <span class="required">*</span></label>
+            <select id="contractStudent" v-model="formData.student_id" @change="handleStudentChange">
+              <option value="">请选择学生</option>
+              <option v-for="student in activeStudents" :key="student.id" :value="student.id">
+                {{ student.student_name }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group-col">
+            <label>UID</label>
+            <input type="text" :value="formData.student_id || '选择学生后自动显示'" readonly class="readonly-input">
+          </div>
         </div>
-        <div class="form-group" v-if="formData.student_id">
-          <label>UID</label>
-          <input type="text" :value="formData.student_id" disabled>
+
+        <!-- 第二行：两列布局 - 合同类型 + 签署形式 -->
+        <div class="form-group-row">
+          <div class="form-group-col">
+            <label for="contractType">合同类型 <span class="required">*</span></label>
+            <select id="contractType" v-model="formData.type" @change="handleFormChange">
+              <option value="">请选择合同类型</option>
+              <option value="0">首报</option>
+              <option value="1">续报</option>
+            </select>
+          </div>
+          <div class="form-group-col">
+            <label for="contractSignatureForm">签署形式 <span class="required">*</span></label>
+            <select id="contractSignatureForm" v-model="formData.signature_form" @change="handleSignatureFormChange">
+              <option value="">请选择签署形式</option>
+              <option value="0">线上签署</option>
+              <option value="1">线下签署</option>
+            </select>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="contractType">合同类型 <span class="required">*</span></label>
-          <select id="contractType" v-model="formData.type" @change="handleFormChange">
-            <option value="">请选择合同类型</option>
-            <option value="0">首报</option>
-            <option value="1">续报</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="contractSignatureForm">签署形式 <span class="required">*</span></label>
-          <select id="contractSignatureForm" v-model="formData.signature_form" @change="handleSignatureFormChange">
-            <option value="">请选择签署形式</option>
-            <option value="0">线上签署</option>
-            <option value="1">线下签署</option>
-          </select>
-        </div>
+
+        <!-- 第三行：单列 - 合同名称 -->
         <div class="form-group">
           <label for="contractName">合同名称 <span class="required" v-if="formData.signature_form == 1">*</span></label>
           <input
@@ -170,8 +169,11 @@
             v-model="formData.name"
             placeholder="请输入合同名称"
             :disabled="formData.signature_form == 0"
+            :class="{'readonly-input': formData.signature_form == 0}"
           >
         </div>
+
+        <!-- 第四行：单列 - 合同金额 -->
         <div class="form-group">
           <label for="contractAmount">合同金额 <span class="required">*</span></label>
           <input
@@ -184,6 +186,8 @@
             @change="handleFormChange"
           >
         </div>
+
+        <!-- 第五行：单列 - 签署方 -->
         <div class="form-group">
           <label for="contractSignatory">签署方 <span class="required">*</span></label>
           <input
@@ -192,70 +196,106 @@
             v-model="formData.signatory"
             placeholder="请输入签署方"
             :readonly="formData.signature_form == 0"
+            :class="{'readonly-input': formData.signature_form == 0}"
           >
         </div>
-      </Modal>
+      </Drawer>
 
-      <!-- 详情弹窗 -->
-      <Modal
-        :show="showDetailModal"
+      <!-- 详情抽屉 -->
+      <Drawer
+        :show="showDetailDrawer"
         title="合同详情"
-        @close="closeDetailModal"
+        :show-footer="true"
         :show-confirm="false"
+        cancel-text="关闭"
+        @close="closeDetailDrawer"
       >
-        <div class="detail-group">
-          <label>ID:</label>
-          <span>{{ detailData.id }}</span>
+        <!-- 第一行：两列 - 学生信息 -->
+        <div class="form-group-row">
+          <div class="form-group-col">
+            <label>学生姓名</label>
+            <input type="text" :value="detailData.student_name" readonly class="readonly-input">
+          </div>
+          <div class="form-group-col">
+            <label>UID</label>
+            <input type="text" :value="detailData.student_id" readonly class="readonly-input">
+          </div>
         </div>
-        <div class="detail-group">
-          <label>UID:</label>
-          <span>{{ detailData.student_id }}</span>
+
+        <!-- 第二行：两列 - 合同分类 -->
+        <div class="form-group-row">
+          <div class="form-group-col">
+            <label>合同类型</label>
+            <input type="text" :value="getTypeText(detailData.type)" readonly class="readonly-input">
+          </div>
+          <div class="form-group-col">
+            <label>签署形式</label>
+            <input type="text" :value="getSignatureFormText(detailData.signature_form)" readonly class="readonly-input">
+          </div>
         </div>
-        <div class="detail-group">
-          <label>学生姓名:</label>
-          <span>{{ detailData.student_name }}</span>
+
+        <!-- 单列 - 合同名称 -->
+        <div class="form-group">
+          <label>合同名称</label>
+          <input type="text" :value="detailData.name" readonly class="readonly-input">
         </div>
-        <div class="detail-group">
-          <label>合同类型:</label>
-          <span>{{ getTypeText(detailData.type) }}</span>
+
+        <!-- 单列 - 合同金额 -->
+        <div class="form-group">
+          <label>合同金额</label>
+          <input type="text" :value="detailData.contract_amount" readonly class="readonly-input">
         </div>
-        <div class="detail-group">
-          <label>签署形式:</label>
-          <span>{{ getSignatureFormText(detailData.signature_form) }}</span>
+
+        <!-- 单列 - 签署方 -->
+        <div class="form-group">
+          <label>签署方</label>
+          <input type="text" :value="detailData.signatory" readonly class="readonly-input">
         </div>
-        <div class="detail-group">
-          <label>合同名称:</label>
-          <span>{{ detailData.name }}</span>
+
+        <!-- 两列 - 发起方信息 -->
+        <div class="form-group-row">
+          <div class="form-group-col">
+            <label>发起方</label>
+            <input type="text" :value="detailData.initiating_party || '-'" readonly class="readonly-input">
+          </div>
+          <div class="form-group-col">
+            <label>发起人</label>
+            <input type="text" :value="detailData.initiator" readonly class="readonly-input">
+          </div>
         </div>
-        <div class="detail-group">
-          <label>合同金额:</label>
-          <span>{{ detailData.contract_amount }}</span>
+
+        <!-- 两列 - 状态 -->
+        <div class="form-group-row">
+          <div class="form-group-col">
+            <label>合同状态</label>
+            <input type="text" :value="getStatusText(detailData.status)" readonly class="readonly-input">
+          </div>
+          <div class="form-group-col">
+            <label>付款状态</label>
+            <input type="text" :value="getPaymentStatusText(detailData.payment_status)" readonly class="readonly-input">
+          </div>
         </div>
-        <div class="detail-group">
-          <label>签署方:</label>
-          <span>{{ detailData.signatory }}</span>
+
+        <!-- 单列 - 创建时间 -->
+        <div class="form-group">
+          <label>创建时间</label>
+          <input type="text" :value="formatDate(detailData.create_time)" readonly class="readonly-input">
         </div>
-        <div class="detail-group">
-          <label>发起方:</label>
-          <span>{{ detailData.initiating_party }}</span>
+
+        <!-- 操作按钮区域 -->
+        <div class="detail-actions">
+          <button
+            v-if="detailData.status === 0"
+            class="delete-btn"
+            @click="handleRevoke"
+          >撤销</button>
+          <button
+            v-if="detailData.signature_form == 1 && detailData.status === 50"
+            class="disable-btn"
+            @click="openTerminateModal"
+          >中止合作</button>
         </div>
-        <div class="detail-group">
-          <label>发起人:</label>
-          <span>{{ detailData.initiator }}</span>
-        </div>
-        <div class="detail-group">
-          <label>合同状态:</label>
-          <span>{{ getStatusText(detailData.status) }}</span>
-        </div>
-        <div class="detail-group">
-          <label>付款状态:</label>
-          <span>{{ getPaymentStatusText(detailData.payment_status) }}</span>
-        </div>
-        <div class="detail-group">
-          <label>创建时间:</label>
-          <span>{{ formatDate(detailData.create_time) }}</span>
-        </div>
-      </Modal>
+      </Drawer>
 
       <!-- 中止合作弹窗 -->
       <Modal
@@ -287,6 +327,7 @@ import { usePermissionStore } from '@/store/modules/permission'
 import { calculatePagination } from '@/utils/helpers'
 import { getContracts, getContract, createContract, revokeContract, terminateContract } from '@/api/contract'
 import { getActiveStudents } from '@/api/student'
+import Drawer from '@/components/common/Drawer.vue'
 import Modal from '@/components/common/Modal.vue'
 import Loading from '@/components/common/Loading.vue'
 import Pagination from '@/components/common/Pagination.vue'
@@ -294,6 +335,7 @@ import Pagination from '@/components/common/Pagination.vue'
 export default {
   name: 'ContractManagement',
   components: {
+    Drawer,
     Modal,
     Loading,
     Pagination
@@ -317,9 +359,9 @@ export default {
     const currentPage = ref(1)
     const pageSize = 10
 
-    // 弹窗相关
-    const showAddModal = ref(false)
-    const showDetailModal = ref(false)
+    // 抽屉和弹窗相关
+    const showAddDrawer = ref(false)
+    const showDetailDrawer = ref(false)
     const showTerminateModal = ref(false)
     const formData = ref({
       student_id: '',
@@ -372,25 +414,25 @@ export default {
     }
 
     const handleFilter = () => {
-      let result = contracts.value || []
+      let result = contracts.value
 
       if (filters.value.id) {
-        result = result.filter(c => c && c.id == filters.value.id)
+        result = result.filter(c => c.id === parseInt(filters.value.id))
       }
       if (filters.value.student_id) {
-        result = result.filter(c => c && c.student_id == filters.value.student_id)
+        result = result.filter(c => c.student_id === parseInt(filters.value.student_id))
       }
       if (filters.value.student_name) {
-        result = result.filter(c => c && c.student_name && c.student_name.toLowerCase().includes(filters.value.student_name.toLowerCase()))
+        result = result.filter(c => c.student_name && c.student_name.includes(filters.value.student_name))
       }
       if (filters.value.type !== '') {
-        result = result.filter(c => c && c.type == filters.value.type)
+        result = result.filter(c => c.type === parseInt(filters.value.type))
       }
       if (filters.value.status !== '') {
-        result = result.filter(c => c && c.status == filters.value.status)
+        result = result.filter(c => c.status === parseInt(filters.value.status))
       }
       if (filters.value.payment_status !== '') {
-        result = result.filter(c => c && c.payment_status == filters.value.payment_status)
+        result = result.filter(c => c.payment_status === parseInt(filters.value.payment_status))
       }
 
       filteredContracts.value = result
@@ -414,7 +456,7 @@ export default {
       currentPage.value = page
     }
 
-    const openAddModal = async () => {
+    const openAddDrawer = async () => {
       formData.value = {
         student_id: '',
         student_name: '',
@@ -425,25 +467,24 @@ export default {
         signatory: ''
       }
 
-      // 获取学生列表
       try {
         const response = await getActiveStudents()
         if (response.data && response.data.students) {
           activeStudents.value = response.data.students
         }
       } catch (error) {
-        console.error('获取学生列表失败:', error)
+        console.error('Fetch students error:', error)
       }
 
-      showAddModal.value = true
+      showAddDrawer.value = true
     }
 
-    const closeAddModal = () => {
-      showAddModal.value = false
+    const closeAddDrawer = () => {
+      showAddDrawer.value = false
     }
 
     const handleStudentChange = () => {
-      const student = activeStudents.value.find(s => s.id == formData.value.student_id)
+      const student = activeStudents.value.find(s => s.id === parseInt(formData.value.student_id))
       if (student) {
         formData.value.student_name = student.student_name
       }
@@ -451,38 +492,45 @@ export default {
     }
 
     const handleSignatureFormChange = () => {
-      // 线上签署时清空合同名称
       if (formData.value.signature_form == 0) {
         formData.value.name = ''
+        formData.value.signatory = '小牛编程'
       } else {
-        // 线下签署时尝试生成合同名称
+        formData.value.signatory = ''
         handleFormChange()
       }
     }
 
     const handleFormChange = () => {
-      // 线下签署时自动生成合同名称
-      if (formData.value.signature_form == 1 &&
-          formData.value.student_id &&
-          formData.value.student_name &&
-          formData.value.type !== '') {
+      if (formData.value.signature_form == 1 && formData.value.student_id && formData.value.student_name && formData.value.type !== '') {
         const typeText = formData.value.type == 0 ? '首报' : '续报'
         formData.value.name = `${formData.value.student_id}${formData.value.student_name}${typeText}合同`
       }
     }
 
     const handleSubmit = async () => {
-      // 验证必填字段
-      if (!formData.value.student_id || formData.value.type === '' ||
-          formData.value.signature_form === '' || !formData.value.contract_amount ||
-          !formData.value.signatory) {
-        alert('请填写所有必填字段')
+      if (!formData.value.student_id) {
+        alert('请选择学生')
         return
       }
-
-      // 线下签署时合同名称也是必填
+      if (formData.value.type === '') {
+        alert('请选择合同类型')
+        return
+      }
+      if (formData.value.signature_form === '') {
+        alert('请选择签署形式')
+        return
+      }
       if (formData.value.signature_form == 1 && !formData.value.name) {
-        alert('请填写合同名称')
+        alert('请输入合同名称')
+        return
+      }
+      if (!formData.value.contract_amount) {
+        alert('请输入合同金额')
+        return
+      }
+      if (!formData.value.signatory) {
+        alert('请输入签署方')
         return
       }
 
@@ -496,58 +544,60 @@ export default {
           signatory: formData.value.signatory
         }
 
-        // 线下签署时才发送合同名称
         if (formData.value.signature_form == 1) {
           data.name = formData.value.name
         }
 
         const response = await createContract(data)
-        if (response.status === 201 || response.data.message === '合同新增成功') {
+        if (response.status === 201) {
           alert('新增合同成功')
           await fetchContracts()
-          closeAddModal()
+          closeAddDrawer()
         } else {
           alert('新增合同失败：' + (response.data.message || response.data.error))
         }
       } catch (error) {
-        console.error('Submit contract error:', error)
-        alert('操作失败：' + error.message)
+        console.error('Create contract error:', error)
+        alert('新增合同失败：' + error.message)
       } finally {
         loading.value = false
       }
     }
 
-    const openDetailModal = async (contract) => {
+    const openDetailDrawer = async (contract) => {
       loading.value = true
       try {
         const response = await getContract(contract.id)
         if (response.data && response.data.contract) {
           detailData.value = response.data.contract
-          showDetailModal.value = true
+          showDetailDrawer.value = true
+        } else {
+          alert('获取合同详情失败')
         }
       } catch (error) {
-        console.error('获取合同详情失败:', error)
+        console.error('Get contract error:', error)
         alert('获取合同详情失败：' + error.message)
       } finally {
         loading.value = false
       }
     }
 
-    const closeDetailModal = () => {
-      showDetailModal.value = false
+    const closeDetailDrawer = () => {
+      showDetailDrawer.value = false
     }
 
-    const handleRevoke = async (contract) => {
-      if (!confirm(`确定要撤销合同 ${contract.name} 吗？`)) {
+    const handleRevoke = async () => {
+      if (!confirm('确定要撤销该合同吗？')) {
         return
       }
 
       loading.value = true
       try {
-        const response = await revokeContract(contract.id)
+        const response = await revokeContract(detailData.value.id)
         if (response.status === 200) {
           alert('撤销成功')
           await fetchContracts()
+          closeDetailDrawer()
         } else {
           alert('撤销失败：' + (response.data.message || response.data.error))
         }
@@ -559,9 +609,9 @@ export default {
       }
     }
 
-    const openTerminateModal = (contract) => {
+    const openTerminateModal = () => {
       terminateData.value = {
-        contract_id: contract.id,
+        contract_id: detailData.value.id,
         termination_agreement: ''
       }
       showTerminateModal.value = true
@@ -585,6 +635,7 @@ export default {
         if (response.status === 200) {
           alert('中止合作成功')
           await fetchContracts()
+          closeDetailDrawer()
           closeTerminateModal()
         } else {
           alert('中止合作失败：' + (response.data.message || response.data.error))
@@ -645,8 +696,8 @@ export default {
       currentPage,
       paginatedContracts,
       totalPages,
-      showAddModal,
-      showDetailModal,
+      showAddDrawer,
+      showDetailDrawer,
       showTerminateModal,
       formData,
       detailData,
@@ -655,14 +706,14 @@ export default {
       handleFilter,
       handleReset,
       handlePageChange,
-      openAddModal,
-      closeAddModal,
+      openAddDrawer,
+      closeAddDrawer,
       handleStudentChange,
       handleSignatureFormChange,
       handleFormChange,
       handleSubmit,
-      openDetailModal,
-      closeDetailModal,
+      openDetailDrawer,
+      closeDetailDrawer,
       handleRevoke,
       openTerminateModal,
       closeTerminateModal,
@@ -678,21 +729,56 @@ export default {
 </script>
 
 <style scoped>
-/* 使用全局样式 */
-.detail-group {
+/* 两列布局 */
+.form-group-row {
   display: flex;
-  margin-bottom: 15px;
-  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
-.detail-group label {
-  min-width: 100px;
-  font-weight: bold;
-  color: #333;
-}
-
-.detail-group span {
+.form-group-col {
   flex: 1;
+  text-align: left;
+}
+
+.form-group-col label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group-col select,
+.form-group-col input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* 只读输入框 */
+.readonly-input {
+  background-color: #f5f5f5;
   color: #666;
+  cursor: not-allowed;
+}
+
+/* 操作按钮区域 */
+.detail-actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  gap: 10px;
+}
+
+.detail-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
 }
 </style>

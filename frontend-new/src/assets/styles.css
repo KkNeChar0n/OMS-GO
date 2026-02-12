@@ -566,6 +566,53 @@ h1 {
     box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
+/* Drawer form styles */
+.drawer-body .form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.drawer-body .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.drawer-body .form-group input,
+.drawer-body .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+}
+
+.drawer-body .form-group input:focus,
+.drawer-body .form-group select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.drawer-body .form-group input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    color: #999;
+}
+
+.drawer-body .form-group input[readonly] {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+.drawer-body .required {
+    color: #e74c3c;
+    margin-left: 2px;
+}
+
 .modal-footer {
     display: flex;
     justify-content: flex-end;
