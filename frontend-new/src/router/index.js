@@ -50,6 +50,12 @@ const routes = [
         name: 'RBAC',
         component: () => import('@/views/RBACManagement.vue'),
         meta: { requiresAuth: true }
+      },
+      {
+        path: 'contracts',
+        name: 'Contracts',
+        component: () => import('@/views/ContractManagement.vue'),
+        meta: { requiresAuth: true }
       }
     ]
   }
