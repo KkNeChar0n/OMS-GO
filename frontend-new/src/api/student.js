@@ -5,6 +5,11 @@ export function getStudents(params) {
   return request.get('/students', { params })
 }
 
+// 获取启用的学生列表
+export function getActiveStudents() {
+  return request.get('/students/active')
+}
+
 // 获取单个学生
 export function getStudent(id) {
   return request.get(`/students/${id}`)

@@ -98,7 +98,9 @@ export default {
     }
 
     const navigateToMenu = (menuRoute) => {
-      router.push(`/home${menuRoute}`)
+      // 确保路由以斜杠开头
+      const normalizedRoute = menuRoute.startsWith('/') ? menuRoute : `/${menuRoute}`
+      router.push(`/home${normalizedRoute}`)
     }
 
     return {
