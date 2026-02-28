@@ -6,33 +6,25 @@
     <div v-if="mounted">
       <div class="page-header">
         <h1>账号管理</h1>
-        <button v-if="hasPermission('add_account')" class="add-btn" @click="openAddModal">
-          新增账号
-        </button>
+        <button v-if="hasPermission('add_account')" class="add-btn" @click="openAddModal">+ 新增账号</button>
       </div>
 
       <!-- 筛选表单 -->
       <div class="filter-form">
         <div class="filter-row">
           <div class="filter-item">
-            <label for="usernameFilter">用户名</label>
-            <input type="text" id="usernameFilter" v-model="filters.username" placeholder="请输入用户名">
+            <label for="accountIdFilter">ID</label>
+            <input type="number" id="accountIdFilter" v-model="filters.id" placeholder="请输入ID">
           </div>
           <div class="filter-item">
-            <label for="roleFilter">角色</label>
-            <select id="roleFilter" v-model="filters.roleId">
-              <option value="">全部</option>
-              <option v-for="role in activeRoles" :key="role.id" :value="role.id">
-                {{ role.name }}
-              </option>
-            </select>
+            <label for="accountPhoneFilter">手机号</label>
+            <input type="text" id="accountPhoneFilter" v-model="filters.phone" placeholder="请输入手机号">
           </div>
           <div class="filter-item">
-            <label for="statusFilter">状态</label>
-            <select id="statusFilter" v-model="filters.status">
+            <label for="accountRoleFilter">角色</label>
+            <select id="accountRoleFilter" v-model="filters.role_id">
               <option value="">全部</option>
-              <option value="0">启用</option>
-              <option value="1">禁用</option>
+              <option v-for="role in allRoles" :key="role.id" :value="role.id">{{ role.name }}</option>
             </select>
           </div>
         </div>
@@ -47,9 +39,9 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>用户名</th>
+            <th>姓名</th>
+            <th>手机号</th>
             <th>角色</th>
-            <th>创建时间</th>
             <th>状态</th>
             <th>操作</th>
           </tr>
@@ -60,26 +52,14 @@
           </tr>
           <tr v-for="account in paginatedAccounts" :key="account.id" v-else>
             <td>{{ account.id }}</td>
-            <td>{{ account.username }}</td>
+            <td>{{ account.name || '-' }}</td>
+            <td>{{ account.phone || '-' }}</td>
             <td>{{ getRoleName(account.role_id) }}</td>
-            <td>{{ formatDate(account.created_at) }}</td>
             <td>{{ getStatusText(account.status) }}</td>
             <td class="action-column">
-              <button
-                v-if="hasPermission('edit_account')"
-                class="edit-btn"
-                @click="openEditModal(account)"
-              >编辑</button>
-              <button
-                v-if="hasPermission('edit_account')"
-                class="edit-btn"
-                @click="openResetPasswordModal(account)"
-              >重置密码</button>
-              <button
-                v-if="hasPermission('edit_account')"
-                :class="account.status === 0 ? 'disable-btn' : 'enable-btn'"
-                @click="toggleStatus(account)"
-              >{{ account.status === 0 ? '禁用' : '启用' }}</button>
+              <button v-if="hasPermission('edit_account')" class="edit-btn" @click="openEditModal(account)">编辑</button>
+              <button v-if="hasPermission('enable_account') && account.status === 1" class="enable-btn" @click="enableAccount(account.id)">启用</button>
+              <button v-if="hasPermission('disable_account') && account.status === 0" class="disable-btn" @click="disableAccount(account.id)">禁用</button>
             </td>
           </tr>
         </tbody>
@@ -93,80 +73,117 @@
       />
     </div>
 
-    <!-- 账号表单弹窗 -->
-    <Modal :show="showModal" @close="closeModal" :title="modalTitle">
-      <form @submit.prevent="submitForm">
-        <div class="form-group">
-          <label for="username">用户名 <span class="required">*</span></label>
-          <input
-            type="text"
-            id="username"
-            v-model="form.username"
-            required
-            :disabled="isEditMode"
-            placeholder="请输入用户名"
-          >
-          <small v-if="!isEditMode" style="color: #666;">用户名一旦创建不可修改</small>
-        </div>
+    <!-- 新增账号弹窗 -->
+    <Modal :show="showModal && !isEditMode" @close="closeModal" title="新增账号" :showCancel="false" :showConfirm="false">
+      <div class="form-group">
+        <label for="username">账号 <span class="required">*</span></label>
+        <input
+          type="text"
+          id="username"
+          v-model="form.username"
+          required
+          placeholder="请输入账号"
+        >
+      </div>
 
-        <div class="form-group" v-if="!isEditMode">
-          <label for="password">密码 <span class="required">*</span></label>
-          <input
-            type="password"
-            id="password"
-            v-model="form.password"
-            :required="!isEditMode"
-            placeholder="请输入密码"
-          >
-        </div>
+      <div class="form-group">
+        <label for="password">密码 <span class="required">*</span></label>
+        <input
+          type="password"
+          id="password"
+          v-model="form.password"
+          required
+          placeholder="请输入密码"
+        >
+      </div>
 
-        <div class="form-group">
-          <label for="roleId">角色 <span class="required">*</span></label>
-          <select id="roleId" v-model="form.role_id" required>
-            <option value="">请选择角色</option>
-            <option v-for="role in activeRoles" :key="role.id" :value="role.id">
-              {{ role.name }}
-            </option>
-          </select>
-        </div>
+      <div class="form-group">
+        <label for="name">姓名 <span class="required">*</span></label>
+        <input
+          type="text"
+          id="name"
+          v-model="form.name"
+          required
+          placeholder="请输入姓名"
+        >
+      </div>
 
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">{{ isEditMode ? '更新' : '创建' }}</button>
-          <button type="button" class="cancel-btn" @click="closeModal">取消</button>
-        </div>
-      </form>
+      <div class="form-group">
+        <label for="phone">手机号 <span class="required">*</span></label>
+        <input
+          type="text"
+          id="phone"
+          v-model="form.phone"
+          required
+          placeholder="请输入手机号"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="roleId">角色 <span class="required">*</span></label>
+        <select id="roleId" v-model="form.role_id" required>
+          <option value="">请选择角色</option>
+          <option v-for="role in activeRoles" :key="role.id" :value="role.id">
+            {{ role.name }}
+          </option>
+        </select>
+      </div>
+
+      <template #footer>
+        <button type="button" class="cancel-btn" @click="closeModal">取消</button>
+        <button type="button" class="save-btn" @click="submitForm">确定</button>
+      </template>
     </Modal>
 
-    <!-- 重置密码弹窗 -->
-    <Modal :show="showResetPasswordModal" @close="closeResetPasswordModal" title="重置密码">
-      <form @submit.prevent="submitResetPassword">
-        <div class="form-group">
-          <label for="newPassword">新密码 <span class="required">*</span></label>
-          <input
-            type="password"
-            id="newPassword"
-            v-model="resetPasswordForm.password"
-            required
-            placeholder="请输入新密码"
-          >
-        </div>
+    <!-- 编辑账号弹窗 -->
+    <Modal :show="showModal && isEditMode" @close="closeModal" title="编辑账号" :showCancel="false" :showConfirm="false">
+      <div class="form-group">
+        <label for="editPassword">密码 <span class="required">*</span></label>
+        <input
+          type="password"
+          id="editPassword"
+          v-model="form.password"
+          required
+          placeholder="请输入新密码"
+        >
+      </div>
 
-        <div class="form-group">
-          <label for="confirmPassword">确认密码 <span class="required">*</span></label>
-          <input
-            type="password"
-            id="confirmPassword"
-            v-model="resetPasswordForm.confirmPassword"
-            required
-            placeholder="请再次输入新密码"
-          >
-        </div>
+      <div class="form-group">
+        <label for="editName">姓名 <span class="required">*</span></label>
+        <input
+          type="text"
+          id="editName"
+          v-model="form.name"
+          required
+          placeholder="请输入姓名"
+        >
+      </div>
 
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">确认重置</button>
-          <button type="button" class="cancel-btn" @click="closeResetPasswordModal">取消</button>
-        </div>
-      </form>
+      <div class="form-group">
+        <label for="editPhone">手机号 <span class="required">*</span></label>
+        <input
+          type="text"
+          id="editPhone"
+          v-model="form.phone"
+          required
+          placeholder="请输入手机号"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="editRoleId">角色 <span class="required">*</span></label>
+        <select id="editRoleId" v-model="form.role_id" required>
+          <option value="">请选择角色</option>
+          <option v-for="role in activeRoles" :key="role.id" :value="role.id">
+            {{ role.name }}
+          </option>
+        </select>
+      </div>
+
+      <template #footer>
+        <button type="button" class="cancel-btn" @click="closeModal">取消</button>
+        <button type="button" class="save-btn" @click="submitForm">确定</button>
+      </template>
     </Modal>
   </div>
 </template>
@@ -200,10 +217,11 @@ export default {
 
     // 账号列表
     const accountList = ref([])
+    const displayAccounts = ref([])
     const filters = ref({
-      username: '',
-      roleId: '',
-      status: ''
+      id: '',
+      phone: '',
+      role_id: ''
     })
 
     // 分页
@@ -212,55 +230,34 @@ export default {
 
     // 模态框
     const showModal = ref(false)
-    const showResetPasswordModal = ref(false)
     const isEditMode = ref(false)
     const editingAccountId = ref(null)
-    const resetPasswordAccountId = ref(null)
 
     // 表单
     const form = ref({
       username: '',
       password: '',
+      name: '',
+      phone: '',
       role_id: ''
-    })
-
-    const resetPasswordForm = ref({
-      password: '',
-      confirmPassword: ''
     })
 
     // 角色列表
     const roleList = ref([])
+    const allRoles = ref([])
     const activeRoles = ref([])
 
     // 计算属性
     const modalTitle = computed(() => isEditMode.value ? '编辑账号' : '新增账号')
 
-    const filteredAccounts = computed(() => {
-      if (!accountList.value) return []
-
-      return accountList.value.filter(account => {
-        if (filters.value.username && !account.username.includes(filters.value.username)) {
-          return false
-        }
-        if (filters.value.roleId && account.role_id != filters.value.roleId) {
-          return false
-        }
-        if (filters.value.status !== '' && account.status != filters.value.status) {
-          return false
-        }
-        return true
-      })
-    })
-
     const totalPages = computed(() => {
-      return Math.ceil(filteredAccounts.value.length / pageSize.value) || 1
+      return Math.ceil(displayAccounts.value.length / pageSize.value) || 1
     })
 
     const paginatedAccounts = computed(() => {
       const start = (currentPage.value - 1) * pageSize.value
       const end = start + pageSize.value
-      return filteredAccounts.value.slice(start, end)
+      return displayAccounts.value.slice(start, end)
     })
 
     // 权限检查
@@ -289,9 +286,12 @@ export default {
       loading.value = true
       try {
         const response = await getAccounts()
-        accountList.value = response.data || []
+        accountList.value = response.data?.accounts || response.data || []
+        displayAccounts.value = accountList.value
       } catch (error) {
         console.error('获取账号列表失败:', error)
+        accountList.value = []
+        displayAccounts.value = []
         alert('获取账号列表失败')
       } finally {
         loading.value = false
@@ -301,24 +301,41 @@ export default {
     const fetchRoles = async () => {
       try {
         const response = await getRoles()
-        roleList.value = response.data || []
+        roleList.value = response.data?.roles || response.data || []
+        allRoles.value = roleList.value
         activeRoles.value = roleList.value.filter(r => r.status === 0)
       } catch (error) {
         console.error('获取角色列表失败:', error)
+        roleList.value = []
+        allRoles.value = []
+        activeRoles.value = []
       }
     }
 
     // 筛选和分页
     const handleFilter = () => {
+      displayAccounts.value = accountList.value.filter(account => {
+        if (filters.value.id && account.id != filters.value.id) {
+          return false
+        }
+        if (filters.value.phone && !account.phone?.includes(filters.value.phone)) {
+          return false
+        }
+        if (filters.value.role_id && account.role_id != filters.value.role_id) {
+          return false
+        }
+        return true
+      })
       currentPage.value = 1
     }
 
     const handleReset = () => {
       filters.value = {
-        username: '',
-        roleId: '',
-        status: ''
+        id: '',
+        phone: '',
+        role_id: ''
       }
+      displayAccounts.value = accountList.value
       currentPage.value = 1
     }
 
@@ -332,6 +349,8 @@ export default {
       form.value = {
         username: '',
         password: '',
+        name: '',
+        phone: '',
         role_id: ''
       }
       showModal.value = true
@@ -343,6 +362,8 @@ export default {
       form.value = {
         username: account.username,
         password: '',
+        name: account.name,
+        phone: account.phone,
         role_id: account.role_id
       }
       showModal.value = true
@@ -353,6 +374,8 @@ export default {
       form.value = {
         username: '',
         password: '',
+        name: '',
+        phone: '',
         role_id: ''
       }
     }
@@ -362,11 +385,10 @@ export default {
       try {
         const data = {
           username: form.value.username,
+          password: form.value.password,
+          name: form.value.name,
+          phone: form.value.phone,
           role_id: parseInt(form.value.role_id)
-        }
-
-        if (!isEditMode.value) {
-          data.password = form.value.password
         }
 
         if (isEditMode.value) {
@@ -387,59 +409,29 @@ export default {
       }
     }
 
-    const toggleStatus = async (account) => {
-      const newStatus = account.status === 0 ? 1 : 0
-      const action = newStatus === 0 ? '启用' : '禁用'
-
-      if (!confirm(`确定要${action}账号"${account.username}"吗？`)) {
-        return
-      }
-
+    const enableAccount = async (accountId) => {
       loading.value = true
       try {
-        await updateAccountStatus(account.id, newStatus)
-        alert(`账号${action}成功`)
+        await updateAccountStatus(accountId, 0)
+        alert('账号启用成功')
         await fetchAccounts()
       } catch (error) {
-        console.error(`${action}账号失败:`, error)
-        alert(`${action}账号失败`)
+        console.error('启用账号失败:', error)
+        alert('启用账号失败')
       } finally {
         loading.value = false
       }
     }
 
-    // 重置密码操作
-    const openResetPasswordModal = (account) => {
-      resetPasswordAccountId.value = account.id
-      resetPasswordForm.value = {
-        password: '',
-        confirmPassword: ''
-      }
-      showResetPasswordModal.value = true
-    }
-
-    const closeResetPasswordModal = () => {
-      showResetPasswordModal.value = false
-      resetPasswordForm.value = {
-        password: '',
-        confirmPassword: ''
-      }
-    }
-
-    const submitResetPassword = async () => {
-      if (resetPasswordForm.value.password !== resetPasswordForm.value.confirmPassword) {
-        alert('两次输入的密码不一致')
-        return
-      }
-
+    const disableAccount = async (accountId) => {
       loading.value = true
       try {
-        await resetAccountPassword(resetPasswordAccountId.value, resetPasswordForm.value.password)
-        alert('密码重置成功')
-        closeResetPasswordModal()
+        await updateAccountStatus(accountId, 1)
+        alert('账号禁用成功')
+        await fetchAccounts()
       } catch (error) {
-        console.error('重置密码失败:', error)
-        alert('重置密码失败')
+        console.error('禁用账号失败:', error)
+        alert('禁用账号失败')
       } finally {
         loading.value = false
       }
@@ -468,12 +460,11 @@ export default {
       totalPages,
       paginatedAccounts,
       showModal,
-      showResetPasswordModal,
       isEditMode,
       modalTitle,
       form,
-      resetPasswordForm,
       roleList,
+      allRoles,
       activeRoles,
       hasPermission,
       getStatusText,
@@ -487,10 +478,8 @@ export default {
       openEditModal,
       closeModal,
       submitForm,
-      toggleStatus,
-      openResetPasswordModal,
-      closeResetPasswordModal,
-      submitResetPassword
+      enableAccount,
+      disableAccount
     }
   }
 }

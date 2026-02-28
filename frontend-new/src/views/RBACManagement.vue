@@ -147,7 +147,7 @@
     </div>
 
     <!-- 角色权限配置弹窗 -->
-    <Modal :show="showRolePermissionsModal" @close="closeRolePermissionsModal" :title="`配置角色权限 - ${currentRole.name}`">
+    <Modal :show="showRolePermissionsModal" @close="closeRolePermissionsModal" :title="`配置角色权限 - ${currentRole.name}`" :showCancel="false" :showConfirm="false">
       <div class="permissions-config">
         <div class="permissions-list">
           <div v-for="permission in permissionList" :key="permission.id" class="permission-item">
@@ -165,63 +165,61 @@
             </label>
           </div>
         </div>
-        <div class="form-actions">
-          <button type="button" class="submit-btn" @click="submitRolePermissions">保存</button>
-          <button type="button" class="cancel-btn" @click="closeRolePermissionsModal">取消</button>
-        </div>
       </div>
+      <template #footer>
+        <button type="button" class="cancel-btn" @click="closeRolePermissionsModal">取消</button>
+        <button type="button" class="save-btn" @click="submitRolePermissions">确定</button>
+      </template>
     </Modal>
 
     <!-- 菜单编辑弹窗 -->
-    <Modal :show="showMenuModal" @close="closeMenuModal" title="编辑菜单">
-      <form @submit.prevent="submitMenuForm">
-        <div class="form-group">
-          <label for="menuName">菜单名称</label>
-          <input
-            type="text"
-            id="menuName"
-            v-model="menuForm.name"
-            disabled
-            placeholder="菜单名称"
-          >
-          <small style="color: #666;">菜单名称不可修改</small>
-        </div>
+    <Modal :show="showMenuModal" @close="closeMenuModal" title="编辑菜单" :showCancel="false" :showConfirm="false">
+      <div class="form-group">
+        <label for="menuName">菜单名称</label>
+        <input
+          type="text"
+          id="menuName"
+          v-model="menuForm.name"
+          disabled
+          placeholder="菜单名称"
+        >
+        <small style="color: #666;">菜单名称不可修改</small>
+      </div>
 
-        <div class="form-group">
-          <label for="menuRoute">路由路径</label>
-          <input
-            type="text"
-            id="menuRoute"
-            v-model="menuForm.route"
-            placeholder="请输入路由路径"
-          >
-        </div>
+      <div class="form-group">
+        <label for="menuRoute">路由路径</label>
+        <input
+          type="text"
+          id="menuRoute"
+          v-model="menuForm.route"
+          placeholder="请输入路由路径"
+        >
+      </div>
 
-        <div class="form-group">
-          <label for="menuIcon">图标</label>
-          <input
-            type="text"
-            id="menuIcon"
-            v-model="menuForm.icon"
-            placeholder="请输入图标名称"
-          >
-        </div>
+      <div class="form-group">
+        <label for="menuIcon">图标</label>
+        <input
+          type="text"
+          id="menuIcon"
+          v-model="menuForm.icon"
+          placeholder="请输入图标名称"
+        >
+      </div>
 
-        <div class="form-group">
-          <label for="menuSort">排序</label>
-          <input
-            type="number"
-            id="menuSort"
-            v-model="menuForm.sort"
-            placeholder="请输入排序值"
-          >
-        </div>
+      <div class="form-group">
+        <label for="menuSort">排序</label>
+        <input
+          type="number"
+          id="menuSort"
+          v-model="menuForm.sort"
+          placeholder="请输入排序值"
+        >
+      </div>
 
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">更新</button>
-          <button type="button" class="cancel-btn" @click="closeMenuModal">取消</button>
-        </div>
-      </form>
+      <template #footer>
+        <button type="button" class="cancel-btn" @click="closeMenuModal">取消</button>
+        <button type="button" class="save-btn" @click="submitMenuForm">确定</button>
+      </template>
     </Modal>
   </div>
 </template>
@@ -288,7 +286,7 @@ export default {
       loading.value = true
       try {
         const response = await getRoles()
-        roleList.value = response.data || []
+        roleList.value = response.roles || response.data || []
       } catch (error) {
         console.error('获取角色列表失败:', error)
         alert('获取角色列表失败')
@@ -301,7 +299,7 @@ export default {
       currentRole.value = role
       try {
         const response = await getRolePermissions(role.id)
-        selectedPermissions.value = response.data.permission_ids || []
+        selectedPermissions.value = response.permission_ids || response.data?.permission_ids || []
         showRolePermissionsModal.value = true
       } catch (error) {
         console.error('获取角色权限失败:', error)
@@ -357,7 +355,7 @@ export default {
       loading.value = true
       try {
         const response = await getPermissions()
-        permissionList.value = response.data || []
+        permissionList.value = response.permissions || response.data || []
       } catch (error) {
         console.error('获取权限列表失败:', error)
         alert('获取权限列表失败')
@@ -392,7 +390,7 @@ export default {
       loading.value = true
       try {
         const response = await getMenuManagement()
-        menuList.value = response.data || []
+        menuList.value = response.menus || response.data || []
       } catch (error) {
         console.error('获取菜单列表失败:', error)
         alert('获取菜单列表失败')

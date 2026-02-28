@@ -1,6 +1,6 @@
 <template>
   <div v-if="show" class="modal-overlay" @click.self="handleClose">
-    <div class="modal-container">
+    <div class="modal-container" :class="{ 'modal-large': width === '800px' }" :style="width !== '500px' && width !== '800px' ? { maxWidth: width } : {}">
       <div class="modal-header">
         <h3>{{ title }}</h3>
         <button class="close-btn" @click="handleClose">×</button>
@@ -8,13 +8,15 @@
       <div class="modal-body">
         <slot></slot>
       </div>
-      <div class="modal-footer">
-        <button v-if="showCancel" class="cancel-btn" @click="handleClose">
-          {{ cancelText }}
-        </button>
-        <button v-if="showConfirm" class="confirm-btn" @click="handleConfirm">
-          {{ confirmText }}
-        </button>
+      <div class="modal-footer" v-if="showCancel || showConfirm || $slots.footer">
+        <slot name="footer">
+          <button v-if="showCancel" class="cancel-btn" @click="handleClose">
+            {{ cancelText }}
+          </button>
+          <button v-if="showConfirm" class="confirm-btn" @click="handleConfirm">
+            {{ confirmText }}
+          </button>
+        </slot>
       </div>
     </div>
   </div>
@@ -47,6 +49,10 @@ export default {
     confirmText: {
       type: String,
       default: '确定'
+    },
+    width: {
+      type: String,
+      default: '500px'
     }
   },
   emits: ['close', 'confirm'],
@@ -76,58 +82,68 @@ export default {
 }
 
 .modal-container {
-  background: white;
+  background-color: white;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   width: 90%;
-  max-width: 600px;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-container.modal-large {
+  max-width: 800px;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ecf0f1;
+  background-color: #f8f9fa;
+  border-radius: 8px 8px 0 0;
 }
 
 .modal-header h3 {
   margin: 0;
+  color: #2c3e50;
   font-size: 18px;
-  font-weight: 600;
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 28px;
-  line-height: 1;
+  font-size: 24px;
   cursor: pointer;
-  color: #666;
+  color: #95a5a6;
   padding: 0;
   width: 30px;
   height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
 
 .close-btn:hover {
-  color: #333;
+  background-color: #ecf0f1;
+  color: #7f8c8d;
 }
 
 .modal-body {
   padding: 20px;
-  overflow-y: auto;
-  flex: 1;
 }
 
 .modal-footer {
-  padding: 20px;
-  border-top: 1px solid #e0e0e0;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  padding: 15px 20px;
+  border-top: 1px solid #ecf0f1;
+  background-color: #f8f9fa;
+  border-radius: 0 0 8px 8px;
 }
 
 .cancel-btn,
@@ -135,25 +151,27 @@ export default {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
   font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .cancel-btn {
-  background: #f5f5f5;
-  color: #333;
+  background-color: #95a5a6;
+  color: #fff;
 }
 
 .cancel-btn:hover {
-  background: #e0e0e0;
+  background-color: #7f8c8d;
 }
 
 .confirm-btn {
-  background: #4CAF50;
-  color: white;
+  background-color: #27ae60;
+  color: #fff;
 }
 
 .confirm-btn:hover {
-  background: #45a049;
+  background-color: #229954;
 }
 </style>

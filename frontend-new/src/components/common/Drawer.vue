@@ -97,15 +97,15 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e0e0e0;
-  background: #f5f5f5;
+  padding: 20px 30px;
+  border-bottom: 1px solid #eee;
+  background: #f8f9fa;
 }
 
 .drawer-header h3 {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  color: #333;
 }
 
 .close-btn {
@@ -125,18 +125,18 @@ export default {
 }
 
 .drawer-body {
-  padding: 20px;
+  padding: 30px;
   overflow-y: auto;
   flex: 1;
 }
 
 .drawer-footer {
-  padding: 20px;
-  border-top: 1px solid #e0e0e0;
+  padding: 20px 30px;
+  border-top: 1px solid #eee;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  background: #f9f9f9;
+  background: #f8f9fa;
 }
 
 .cancel-btn,
@@ -149,12 +149,12 @@ export default {
 }
 
 .cancel-btn {
-  background: #f5f5f5;
-  color: #333;
+  background: #95a5a6;
+  color: white;
 }
 
 .cancel-btn:hover {
-  background: #e0e0e0;
+  background: #7f8c8d;
 }
 
 .confirm-btn {

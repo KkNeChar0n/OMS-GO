@@ -123,14 +123,14 @@ func (h *AccountHandler) UpdateAccountStatus(c *gin.Context) {
 	}
 
 	var req struct {
-		Status int8 `json:"status" binding:"required"`
+		Status *int8 `json:"status" binding:"required,oneof=0 1"` // 使用指针类型，可以区分0和未提供的值
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.BadRequest(c, "参数错误")
 		return
 	}
 
-	if err := h.accountService.UpdateAccountStatus(c.Request.Context(), uint(id), req.Status); err != nil {
+	if err := h.accountService.UpdateAccountStatus(c.Request.Context(), uint(id), *req.Status); err != nil {
 		response.HandleError(c, err)
 		return
 	}

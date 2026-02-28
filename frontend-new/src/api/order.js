@@ -20,32 +20,42 @@ export function updateOrder(id, data) {
   return request.put(`/orders/${id}`, data)
 }
 
-// 删除订单
-export function deleteOrder(id) {
-  return request.delete(`/orders/${id}`)
+// 提交订单
+export function submitOrder(id) {
+  return request.put(`/orders/${id}/submit`)
 }
 
-// 更新订单状态
-export function updateOrderStatus(id, status) {
-  return request.put(`/orders/${id}/status`, { status })
+// 作废订单
+export function cancelOrder(id) {
+  return request.put(`/orders/${id}/cancel`)
+}
+
+// 获取订单商品列表
+export function getOrderGoods(id) {
+  return request.get(`/orders/${id}/goods`)
+}
+
+// 获取订单待付金额
+export function getOrderPendingAmount(id) {
+  return request.get(`/orders/${id}/pending-amount`)
+}
+
+// 获取订单退费信息
+export function getOrderRefundInfo(id) {
+  return request.get(`/orders/${id}/refund-info`)
+}
+
+// 获取退费收款列表
+export function getRefundPayments(id, data) {
+  return request.post(`/orders/${id}/refund-payments`, data)
+}
+
+// 计算订单优惠
+export function calculateDiscount(data) {
+  return request.post('/orders/calculate-discount', data)
 }
 
 // 获取子订单列表
 export function getChildOrders(params) {
-  return request.get('/child-orders', { params })
-}
-
-// 新增子订单
-export function createChildOrder(data) {
-  return request.post('/child-orders', data)
-}
-
-// 更新子订单
-export function updateChildOrder(id, data) {
-  return request.put(`/child-orders/${id}`, data)
-}
-
-// 删除子订单
-export function deleteChildOrder(id) {
-  return request.delete(`/child-orders/${id}`)
+  return request.get('/childorders', { params })
 }

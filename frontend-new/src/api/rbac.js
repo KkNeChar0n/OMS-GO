@@ -39,3 +39,33 @@ export function getRolePermissions(roleId) {
 export function updateRolePermissions(roleId, data) {
   return request.put(`/roles/${roleId}/permissions`, data)
 }
+
+// 设置角色权限
+export function setRolePermissions(roleId, permissionIds) {
+  return request.put(`/roles/${roleId}/permissions`, { permission_ids: permissionIds })
+}
+
+// 创建角色
+export function createRole(data) {
+  return request.post('/roles', data)
+}
+
+// 更新角色
+export function updateRole(id, data) {
+  return request.put(`/roles/${id}`, data)
+}
+
+// 更新角色状态
+export function updateRoleStatus(id, status) {
+  return request.put(`/roles/${id}/status`, { status })
+}
+
+// 更新权限状态
+export function updatePermissionStatus(id, status) {
+  return request.put(`/permissions/${id}/status`, { status })
+}
+
+// 更新菜单状态
+export function updateMenuStatus(id, status) {
+  return request.put(`/menu-management/${id}/status`, { status })
+}
