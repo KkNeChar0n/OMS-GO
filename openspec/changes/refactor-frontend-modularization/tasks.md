@@ -52,10 +52,33 @@
   - [x] 4.3.3 更新教练 PUT /api/coaches/:id
   - [x] 4.3.4 删除教练 DELETE /api/coaches/:id
 - [x] 4.4 实现订单管理接口（api/order.js）
-  - [x] 4.4.1 获取订单列表 GET /api/orders
-  - [x] 4.4.2 新增订单 POST /api/orders
-  - [x] 4.4.3 更新订单 PUT /api/orders/:id
-  - [x] 4.4.4 获取子订单列表
+  - [x] 4.4.1 主订单接口
+    - [x] 获取订单列表 GET /api/orders
+    - [x] 创建订单 POST /api/orders
+    - [x] 获取订单商品列表 GET /api/orders/:id/goods
+    - [x] 更新订单 PUT /api/orders/:id
+    - [x] 提交订单 PUT /api/orders/:id/submit
+    - [x] 作废订单 PUT /api/orders/:id/cancel
+    - [x] 计算订单优惠 POST /api/orders/calculate-discount
+    - [x] 获取订单待付金额 GET /api/orders/:id/pending-amount
+    - [x] 获取订单退费信息 GET /api/orders/:id/refund-info
+    - [x] 获取退费收款列表 POST /api/orders/:id/refund-payments
+    - [x] 获取学生未付款订单 GET /api/students/:id/unpaid-orders
+  - [x] 4.4.2 子订单接口
+    - [x] 获取子订单列表 GET /api/childorders
+  - [ ] 4.4.3 退款订单接口
+    - [ ] 获取退款订单列表 GET /api/refund-orders
+    - [ ] 创建退款订单 POST /api/refund-orders
+    - [ ] 获取退款订单详情 GET /api/refund-orders/:id
+  - [ ] 4.4.4 子退费订单接口
+    - [ ] 获取子退费订单列表 GET /api/refund-childorders
+  - [ ] 4.4.5 退费补充信息接口
+    - [ ] 获取常规退费补充信息列表 GET /api/refund-regular-supplements
+    - [ ] 获取淘宝退费补充信息列表 GET /api/refund-taobao-supplements
+    - [ ] 获取退费支付明细列表 GET /api/refund-payment-details
+  - [x] 4.4.6 辅助接口
+    - [x] 获取启用商品列表 GET /api/goods/active-for-order
+    - [x] 获取商品总价 GET /api/goods/:id/total-price
 - [x] 4.5 实现商品管理接口（api/goods.js）
   - [x] 4.5.1 获取商品列表 GET /api/goods
   - [x] 4.5.2 新增商品 POST /api/goods
@@ -71,6 +94,79 @@
   - [x] 4.7.2 获取权限列表 GET /api/permissions
   - [x] 4.7.3 获取菜单树 GET /api/menu-tree
   - [x] 4.7.4 角色权限管理接口
+- [ ] 4.8 实现审批流接口（api/approval.js）
+  - [ ] 4.8.1 审批流类型接口
+    - [ ] 获取审批流类型列表 GET /api/approval_flow_type
+    - [ ] 创建审批流类型 POST /api/approval-flow-types
+    - [ ] 更新审批流类型状态 PUT /api/approval_flow_type/:id/status
+  - [ ] 4.8.2 审批流模板接口
+    - [ ] 获取审批流模板列表 GET /api/approval_flow_template
+    - [ ] 获取审批流模板详情 GET /api/approval_flow_template/:id
+    - [ ] 创建审批流模板 POST /api/approval_flow_template
+    - [ ] 更新审批流模板状态 PUT /api/approval_flow_template/:id/status
+  - [ ] 4.8.3 审批流管理接口
+    - [ ] 获取我发起的审批流 GET /api/approval_flow_management/initiated
+    - [ ] 获取待我审批的任务 GET /api/approval_flow_management/pending
+    - [ ] 获取处理完成的审批 GET /api/approval_flow_management/completed
+    - [ ] 获取抄送我的通知 GET /api/approval_flow_management/copied
+    - [ ] 获取审批流详情 GET /api/approval_flow_management/:id
+    - [ ] 从模板创建审批流 POST /api/approval_flow_management/create_from_template
+    - [ ] 撤销审批流 POST /api/approval_flow_management/:id/cancel
+    - [ ] 审批通过 POST /api/approval_flow_management/approve
+    - [ ] 审批驳回 POST /api/approval_flow_management/reject
+- [x] 4.9 实现活动管理接口（api/activity.js）
+  - [x] 4.9.1 获取活动列表 GET /api/activities
+  - [x] 4.9.2 获取活动详情 GET /api/activities/:id
+  - [x] 4.9.3 创建活动 POST /api/activities
+  - [x] 4.9.4 更新活动 PUT /api/activities/:id
+  - [x] 4.9.5 删除活动 DELETE /api/activities/:id
+  - [x] 4.9.6 更新活动状态 PUT /api/activities/:id/status
+  - [x] 4.9.7 按日期范围查询活动 GET /api/activities/by-date-range
+- [x] 4.10 实现活动模板接口（api/activity_template.js）
+  - [x] 4.10.1 获取活动模板列表 GET /api/activity-templates
+  - [x] 4.10.2 获取活动模板详情 GET /api/activity-templates/:id
+  - [x] 4.10.3 创建活动模板 POST /api/activity-templates
+  - [x] 4.10.4 更新活动模板 PUT /api/activity-templates/:id
+  - [x] 4.10.5 删除活动模板 DELETE /api/activity-templates/:id
+  - [x] 4.10.6 更新活动模板状态 PUT /api/activity-templates/:id/status
+  - [x] 4.10.7 获取启用的活动模板 GET /api/activity-templates/active
+- [x] 4.11 实现合同管理接口（api/contract.js）
+  - [x] 4.11.1 获取合同列表 GET /api/contracts
+  - [x] 4.11.2 获取合同详情 GET /api/contracts/:id
+  - [x] 4.11.3 创建合同 POST /api/contracts
+  - [x] 4.11.4 撤销合同 PUT /api/contracts/:id/revoke
+  - [x] 4.11.5 中止合作 PUT /api/contracts/:id/terminate
+- [ ] 4.12 实现财务管理接口（api/finance.js）
+  - [ ] 4.12.1 收款管理接口
+    - [ ] 获取收款列表 GET /api/payment-collections
+    - [ ] 新增收款 POST /api/payment-collections
+    - [ ] 确认到账 PUT /api/payment-collections/:id/confirm
+    - [ ] 删除收款 DELETE /api/payment-collections/:id
+  - [ ] 4.12.2 待认领收款接口
+    - [ ] 获取待认领列表 GET /api/unclaimed
+    - [ ] 认领待认领收款 PUT /api/unclaimed/:id/claim
+    - [ ] 删除待认领 DELETE /api/unclaimed/:id
+    - [ ] 下载待认领Excel模板 GET /api/unclaimed/template
+    - [ ] 导入待认领Excel POST /api/unclaimed/import
+  - [ ] 4.12.3 淘宝收款接口
+    - [ ] 获取淘宝已付款列表 GET /api/taobao-payments
+    - [ ] 新增淘宝收款 POST /api/taobao-payments
+    - [ ] 确认淘宝收款到账 PUT /api/taobao-payments/:id/confirm
+    - [ ] 删除淘宝收款 DELETE /api/taobao-payments/:id
+    - [ ] 获取订单待支付金额 GET /api/orders/:id/pending-amount
+  - [ ] 4.12.4 淘宝待认领接口
+    - [ ] 获取淘宝待认领列表 GET /api/taobao-unclaimed
+    - [ ] 认领淘宝待认领 PUT /api/taobao-unclaimed/:id/claim
+    - [ ] 删除淘宝待认领 DELETE /api/taobao-unclaimed/:id
+    - [ ] 下载淘宝待认领Excel模板 GET /api/taobao-unclaimed/template
+    - [ ] 导入淘宝待认领Excel POST /api/taobao-unclaimed/import
+  - [ ] 4.12.5 分账明细接口
+    - [ ] 获取分账明细列表 GET /api/separate-accounts
+  - [ ] 4.12.6 退费管理接口
+    - [ ] 获取常规退费列表 GET /api/refund-regular-supplements
+    - [ ] 获取淘宝退费列表 GET /api/refund-taobao-supplements
+  - [ ] 4.12.7 退费明细接口
+    - [ ] 获取退费明细列表 GET /api/refund-payment-details
 
 ## 5. 公共组件开发
 - [x] 5.1 通用组件
@@ -113,29 +209,181 @@
   - [x] 7.3.3 新增/编辑教练弹窗
   - [x] 7.3.4 删除教练功能
   - [x] 7.3.5 分页功能
-- [x] 7.4 订单管理页面（views/OrderManagement.vue）
-  - [x] 7.4.1 订单列表展示
-  - [x] 7.4.2 子订单管理
-  - [x] 7.4.3 新增/编辑订单弹窗
-  - [x] 7.4.4 订单状态管理
-  - [x] 7.4.5 订单提交和作废功能
-  - [x] 7.4.6 活动优惠计算功能
-  - [x] 7.4.7 订单详情查看
+- [x] 7.4 订单管理模块（4个二级菜单）
+  - [x] 7.4.1 订单管理页面（views/OrderManagement.vue）
+    - [x] 主订单列表展示（表格列：ID、UID、下单时间、姓名、应收金额、优惠金额、实收金额、状态）
+    - [x] 筛选功能（ID、UID、订单状态）
+    - [x] 订单状态：草稿(10)、未支付(20)、部分支付(30)、已支付(40)、退费中(50)、已作废(99)
+    - [x] 新增订单功能（需要 add_order 权限）
+    - [x] 编辑订单功能（需要 edit_order 权限，仅草稿状态可编辑）
+    - [x] 作废订单功能（需要 void_order 权限，仅草稿状态可作废）
+    - [x] 查看详情功能（未支付、部分支付、已支付、退费中状态可查看）
+    - [x] 申请退费功能（需要 apply_refund 权限，部分支付或已支付状态可申请）
+    - [x] 活动优惠计算功能
+    - [x] 分页功能
+  - [ ] 7.4.2 子订单页面（views/ChildOrders.vue）
+    - [ ] 子订单明细列表展示（表格列：ID、订单ID、商品ID、商品名称、应收金额、优惠金额、实收金额、状态）
+    - [ ] 筛选功能（ID、订单ID、商品ID、订单状态）
+    - [ ] 订单状态：草稿(0)、未支付(10)、部分支付(20)、已支付(30)、已作废(99)
+    - [ ] 只读查看，无编辑操作
+    - [ ] 分页功能
+  - [ ] 7.4.3 退费订单页面（views/RefundOrders.vue）
+    - [ ] 退费订单列表展示（表格列：ID、UID、订单ID、退费金额、提交人、提交时间、状态）
+    - [ ] 筛选功能（ID、UID、订单ID）
+    - [ ] 状态：退费中(0)、已通过(10)、已驳回(20)
+    - [ ] 查看详情功能（可查看退费订单详细信息、退费子订单列表、补充信息等）
+    - [ ] 分页功能
+  - [ ] 7.4.4 子退费订单页面（views/RefundChildOrders.vue）
+    - [ ] 子退费订单明细列表展示（表格列：ID、UID、订单ID、商品ID、商品名称、退费金额、状态）
+    - [ ] 筛选功能（ID、UID、订单ID、商品ID、状态）
+    - [ ] 状态：退费中(0)、已通过(10)、已驳回(20)
+    - [ ] 只读查看，无编辑操作
+    - [ ] 分页功能
 - [x] 7.5 商品管理页面（views/GoodsManagement.vue）
-  - [x] 7.5.1 商品列表展示
-  - [x] 7.5.2 品牌、分类、属性管理
-  - [x] 7.5.3 新增/编辑商品弹窗
-  - [x] 7.5.4 商品状态管理
+  - [x] 7.5.1 商品列表展示（表格列：ID、名称、价格、品牌、类型、属性、状态）
+  - [x] 7.5.2 筛选功能（ID、名称、品牌、类型、状态）
+  - [x] 7.5.3 新增商品侧边抽屉（Drawer）
+    - [x] 基础信息：名称、品牌、类型、组合售卖、标准售价
+    - [x] 组合售卖选择（是/否）
+    - [x] 包含商品管理（仅组合售卖时显示）
+      - [x] 显示已选商品表格（ID、商品名称、标准售价、操作）
+      - [x] 新增包含商品子弹窗（选择商品、显示品牌、类型、属性、价格）
+      - [x] 删除包含商品功能
+      - [x] 商品总价计算（仅供参考）
+    - [x] 属性选择（动态行，支持添加/删除）
+      - [x] 属性下拉选择（排除已选属性，只显示classify=0的属性）
+      - [x] 属性值下拉选择（根据选择的属性动态加载）
+      - [x] +/- 按钮控制行数
+    - [x] 规格选择（动态行，支持添加/删除）
+      - [x] 规格下拉选择（排除已选规格，只显示classify=1的属性）
+      - [x] 规格值下拉选择（根据选择的规格动态加载）
+      - [x] +/- 按钮控制行数
+    - [x] 保存新增商品功能
+  - [x] 7.5.4 编辑商品侧边抽屉（Drawer）
+    - [x] 加载商品详情数据
+    - [x] 基础信息编辑（名称、品牌、类型、标准售价）
+    - [x] 组合售卖字段禁用（不可修改）
+    - [x] 包含商品管理（仅组合售卖时显示）
+      - [x] 加载已包含商品列表
+      - [x] 新增/删除包含商品
+      - [x] 商品总价计算
+    - [x] 属性编辑（动态行，回显已有属性）
+    - [x] 规格编辑（动态行，回显已有规格）
+    - [x] 保存编辑商品功能
+  - [x] 7.5.5 启用/禁用商品确认弹窗
+  - [x] 7.5.6 品牌管理（独立Modal）
+    - [x] 品牌列表展示
+    - [x] 新增品牌功能
+    - [x] 编辑品牌功能
+    - [x] 启用/禁用品牌功能
+  - [x] 7.5.7 分类管理（独立页面）
+    - [x] 分类列表展示（支持父子分类）
+    - [x] 新增分类功能
+    - [x] 编辑分类功能
+    - [x] 启用/禁用分类功能
+  - [x] 7.5.8 属性管理（独立页面）
+    - [x] 属性列表展示
+    - [x] 新增属性功能（包含属性值管理）
+    - [x] 编辑属性功能
+    - [x] 启用/禁用属性功能
+    - [x] 属性值管理功能（动态添加/删除属性值）
+  - [x] 7.5.9 分页功能
 - [x] 7.6 账号管理页面（views/AccountManagement.vue）
   - [x] 7.6.1 账号列表展示
   - [x] 7.6.2 新增/编辑账号弹窗
   - [x] 7.6.3 角色分配
   - [x] 7.6.4 账号状态管理
-- [x] 7.7 权限管理页面（views/RBACManagement.vue）
-  - [x] 7.7.1 角色管理
-  - [x] 7.7.2 权限管理
-  - [x] 7.7.3 菜单管理
-  - [x] 7.7.4 角色权限配置
+- [ ] 7.7 权限管理页面（views/PermissionManagement.vue、RoleManagement.vue、MenuManagement.vue）
+  - [x] 7.7.1 角色管理页面
+  - [x] 7.7.2 权限管理页面
+  - [x] 7.7.3 菜单管理页面
+  - [ ] 7.7.4 路由配置和菜单数据验证
+  - [ ] 7.7.5 数据加载和显示测试
+- [ ] 7.8 审批流类型页面（views/ApprovalFlowType.vue）
+  - [ ] 7.8.1 审批流类型列表展示（表格列：ID、名称、状态）
+  - [ ] 7.8.2 筛选功能（ID、类型名称、状态）
+  - [ ] 7.8.3 启用/禁用审批流类型功能
+  - [ ] 7.8.4 分页功能
+- [ ] 7.9 审批流模板页面（views/ApprovalFlowTemplate.vue）
+  - [ ] 7.9.1 审批流模板列表展示（表格列：ID、审批流类型、模板名称、创建人、创建时间、状态）
+  - [ ] 7.9.2 筛选功能（ID、审批流类型、模板名称、状态）
+  - [ ] 7.9.3 新增审批流模板功能（包含节点配置、审批人员、抄送人员）
+  - [ ] 7.9.4 查看审批流模板详情
+  - [ ] 7.9.5 启用/禁用审批流模板功能（启用时自动禁用同类型其他模板）
+  - [ ] 7.9.6 分页功能
+- [x] 7.10 审批流管理页面（views/ApprovalFlowManagement.vue）
+  - [ ] 7.10.1 Tab导航实现（我发起的、待我审批、处理完成、抄送我的）
+  - [ ] 7.10.2 我发起的Tab（表格列：ID、审批流类型、当前节点步骤、创建时间、状态、完成时间；操作：撤销）
+  - [ ] 7.10.3 待我审批Tab（表格列：ID、审批流ID、审批流类型、节点类型、节点排序、创建时间；操作：详情）
+  - [ ] 7.10.4 处理完成Tab（表格列：ID、审批流ID、审批流类型、节点类型、节点排序、审批结果、处理时间；操作：详情）
+  - [ ] 7.10.5 抄送我的Tab（表格列：ID、审批流ID、审批流类型、抄送信息、创建时间；操作：详情）
+  - [ ] 7.10.6 各Tab的筛选功能
+  - [ ] 7.10.7 审批详情弹窗（包含审批通过/驳回操作）
+  - [ ] 7.10.8 从模板创建审批流功能
+  - [ ] 7.10.9 撤销审批流功能
+  - [ ] 7.10.10 分页功能
+- [x] 7.11 活动管理页面（views/ActivityManagement.vue）
+  - [x] 7.11.1 活动列表展示（表格列：ID、活动名称、关联模板、活动类型、开始时间、结束时间、状态）
+  - [x] 7.11.2 筛选功能（ID、活动名称、活动模板、状态）- 点击搜索按钮才执行搜索
+  - [x] 7.11.3 新增活动功能
+  - [x] 7.11.4 编辑活动功能
+  - [x] 7.11.5 查看活动详情 - 表单元素尺寸与原项目1:1匹配（padding: 12px, font-size: 16px）
+  - [x] 7.11.6 启用/禁用活动状态
+  - [x] 7.11.7 分页功能
+  - [x] 7.11.8 关联商品展示 - 详情页正确显示关联的商品列表
+- [x] 7.11.9 活动模板页面（views/ActivityTemplateManagement.vue）
+  - [x] 活动模板列表展示（表格列：ID、模板名称、活动类型、选择方式、状态）
+  - [x] 筛选功能（ID、模板名称、活动类型、状态）- 点击搜索按钮才执行搜索
+  - [x] 新增模板功能
+  - [x] 查看模板详情 - 表单元素尺寸与原项目1:1匹配（padding: 12px, font-size: 16px）
+  - [x] 启用/禁用模板状态
+  - [x] 分页功能
+  - [x] 关联商品展示 - 详情页根据选择方式（按类型/按商品）正确加载并显示商品
+- [x] 7.12 合同管理模块（独立一级菜单）
+  - [x] 7.12.1 合同管理页面（views/ContractManagement.vue）
+    - [x] 合同列表展示（表格列：ID、UID、学生姓名、合同类型、签约形式、合同名称、合同金额、发起方、签约人、发起人、状态、支付状态、创建时间）
+    - [x] 筛选功能（ID、UID、学生姓名、合同类型、状态、支付状态）
+    - [x] 新增合同功能（需要 add_contract 权限）
+    - [x] 查看合同详情
+    - [x] 撤销合同功能
+    - [x] 中止合作功能
+    - [x] 合同状态：草稿、待审批、已通过、已驳回、已撤销、已终止等
+    - [x] 支付状态：未支付、部分支付、已支付等
+    - [x] 分页功能
+- [ ] 7.13 财务管理模块（4个二级菜单）
+  - [ ] 7.13.1 收款管理页面（views/finance/PaymentCollection.vue）
+    - [ ] Tab导航实现（常规收款、淘宝收款）
+    - [ ] 常规收款Tab
+      - [ ] 常规收款记录列表展示
+      - [ ] 新增收款记录功能（需要 add_payment 权限）
+      - [ ] 筛选和分页功能
+    - [ ] 淘宝收款Tab（包含3个子Tab：已支付、未认领、已认领）
+      - [ ] 已支付子Tab：显示淘宝订单的支付记录
+      - [ ] 未认领子Tab：显示待认领的淘宝支付，支持认领和删除操作
+      - [ ] 已认领子Tab：显示已认领的淘宝支付记录
+      - [ ] 显示字段：付款人、支付宝账号、支付金额、到账时间、商户订单号、状态、认领人等
+  - [ ] 7.13.2 分账明细页面（views/finance/SeparateAccount.vue）
+    - [ ] 分账明细列表展示
+    - [ ] 筛选功能（ID、UID、订单ID、子订单ID）
+    - [ ] 显示字段：ID、UID、订单ID、子订单ID、收款ID、收款类型、商品ID、商品名称、分账金额、类型
+    - [ ] 用于跟踪和管理收款的分账情况
+    - [ ] 分页功能
+  - [ ] 7.13.3 退费管理页面（views/finance/RefundManagement.vue）
+    - [ ] Tab导航实现（常规退费、淘宝退费）
+    - [ ] 常规退费Tab
+      - [ ] 常规退费记录列表展示
+      - [ ] 筛选功能（ID、UID）
+      - [ ] 显示退费状态和金额
+    - [ ] 淘宝退费Tab
+      - [ ] 淘宝退费记录列表展示
+      - [ ] 显示字段：ID、UID、退款订单ID、支付宝账号、支付宝名称、退费金额、状态
+    - [ ] 分页功能
+  - [ ] 7.13.4 退费明细页面（views/finance/RefundPaymentDetail.vue）
+    - [ ] 退费明细列表展示
+    - [ ] 筛选功能（ID、UID、订单ID、退款ID、收款ID）
+    - [ ] 显示字段：ID、UID、订单ID、退款ID、收款ID、收款类型、收款主体、退费金额、状态
+    - [ ] 提供详细的退费支付明细信息
+    - [ ] 分页功能
 
 ## 8. 根组件和应用入口
 - [x] 8.1 创建 App.vue 根组件

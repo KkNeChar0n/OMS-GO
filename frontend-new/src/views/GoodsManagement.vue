@@ -6,446 +6,354 @@
     <div v-if="mounted">
       <div class="page-header">
         <h1>商品管理</h1>
+        <button v-if="hasPermission('add_goods')" class="add-btn" @click="openAddGoodsDrawer">新增</button>
       </div>
 
-      <!-- 标签页导航 -->
-      <div class="tabs">
-        <button
-          :class="['tab-btn', { active: activeTab === 'goods' }]"
-          @click="activeTab = 'goods'"
-        >
-          商品列表
-        </button>
-        <button
-          :class="['tab-btn', { active: activeTab === 'brand' }]"
-          @click="activeTab = 'brand'"
-        >
-          品牌管理
-        </button>
-        <button
-          :class="['tab-btn', { active: activeTab === 'classify' }]"
-          @click="activeTab = 'classify'"
-        >
-          分类管理
-        </button>
-        <button
-          :class="['tab-btn', { active: activeTab === 'attribute' }]"
-          @click="activeTab = 'attribute'"
-        >
-          属性管理
-        </button>
+      <!-- 筛选表单 -->
+      <div class="filter-form">
+        <div class="filter-row">
+          <div class="filter-item">
+            <label for="goodsIdFilter">ID</label>
+            <input type="number" id="goodsIdFilter" v-model="goodsFilters.id" placeholder="请输入ID">
+          </div>
+          <div class="filter-item">
+            <label for="goodsNameFilter">名称</label>
+            <input type="text" id="goodsNameFilter" v-model="goodsFilters.name" placeholder="请输入名称">
+          </div>
+          <div class="filter-item">
+            <label for="goodsBrandFilter">品牌</label>
+            <select id="goodsBrandFilter" v-model="goodsFilters.brandid">
+              <option value="">全部</option>
+              <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="goodsClassifyFilter">类型</label>
+            <select id="goodsClassifyFilter" v-model="goodsFilters.classifyid">
+              <option value="">全部</option>
+              <option v-for="classify in classifies" :key="classify.id" :value="classify.id">{{ classify.name }}</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label for="goodsStatusFilter">状态</label>
+            <select id="goodsStatusFilter" v-model="goodsFilters.status">
+              <option value="">全部</option>
+              <option value="0">启用</option>
+              <option value="1">禁用</option>
+            </select>
+          </div>
+        </div>
+        <div class="filter-actions">
+          <button class="search-btn" @click="searchGoods">搜索</button>
+          <button class="reset-btn" @click="resetGoodsFilters">重置</button>
+        </div>
       </div>
 
-      <!-- 商品列表标签页 -->
-      <div v-show="activeTab === 'goods'" class="tab-content">
-        <div class="section-header">
-          <button v-if="hasPermission('add_goods')" class="add-btn" @click="openAddGoodsModal">
-            新增商品
-          </button>
-        </div>
+      <!-- 商品列表 -->
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>名称</th>
+            <th>价格</th>
+            <th>品牌</th>
+            <th>类型</th>
+            <th>属性</th>
+            <th>状态</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-if="!paginatedGoods || paginatedGoods.length === 0">
+            <td colspan="8" style="text-align: center; padding: 40px;">暂无数据</td>
+          </tr>
+          <tr v-for="goods in paginatedGoods" :key="goods.id" v-else>
+            <td>{{ goods.id }}</td>
+            <td>{{ goods.name }}</td>
+            <td>{{ goods.price }}</td>
+            <td>{{ goods.brand_name }}</td>
+            <td>{{ goods.classify_name }}</td>
+            <td :title="getFullAttributes(goods)" class="goods-attributes-cell">
+              {{ formatGoodsAttributes(goods) || '无' }}
+            </td>
+            <td>{{ goods.status === 0 ? '启用' : '禁用' }}</td>
+            <td class="action-column">
+              <button v-if="hasPermission('edit_goods')" class="edit-btn" @click="openEditGoodsDrawer(goods.id)">编辑</button>
+              <button v-if="hasPermission('enable_goods') && goods.status === 1" class="enable-btn" @click="enableGoods(goods.id)">启用</button>
+              <button v-if="hasPermission('disable_goods') && goods.status === 0" class="disable-btn" @click="disableGoods(goods.id)">禁用</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-        <!-- 筛选表单 -->
-        <div class="filter-form">
-          <div class="filter-row">
-            <div class="filter-item">
-              <label>商品名称</label>
-              <input type="text" v-model="goodsFilters.name" placeholder="请输入商品名称">
-            </div>
-            <div class="filter-item">
-              <label>品牌</label>
-              <select v-model="goodsFilters.brandId">
-                <option value="">全部</option>
-                <option v-for="brand in activeBrands" :key="brand.id" :value="brand.id">
-                  {{ brand.name }}
-                </option>
-              </select>
-            </div>
-            <div class="filter-item">
-              <label>分类</label>
-              <select v-model="goodsFilters.classifyId">
-                <option value="">全部</option>
-                <option v-for="classify in activeClassifies" :key="classify.id" :value="classify.id">
-                  {{ classify.name }}
-                </option>
-              </select>
-            </div>
-            <div class="filter-item">
-              <label>状态</label>
-              <select v-model="goodsFilters.status">
-                <option value="">全部</option>
-                <option value="0">启用</option>
-                <option value="1">禁用</option>
-              </select>
-            </div>
-          </div>
-          <div class="filter-actions">
-            <button class="search-btn" @click="fetchGoods">搜索</button>
-            <button class="reset-btn" @click="resetGoodsFilters">重置</button>
-          </div>
-        </div>
+      <!-- 分页 -->
+      <Pagination
+        :current-page="goodsCurrentPage"
+        :total-pages="goodsTotalPages"
+        @page-change="handleGoodsPageChange"
+      />
+    </div>
 
-        <!-- 商品列表 -->
-        <table class="data-table">
+    <!-- 新增商品 Drawer -->
+    <Drawer
+      :show="showAddGoodsDrawer"
+      @close="closeAddGoodsDrawer"
+      @confirm="saveAddGoods"
+      title="新增商品"
+      cancelText="取消"
+      confirmText="确定"
+    >
+      <div class="form-group">
+        <label for="addGoodsName">名称 <span class="required">*</span></label>
+        <input type="text" id="addGoodsName" v-model="addGoodsData.name" placeholder="请输入商品名称" required>
+      </div>
+
+      <div class="form-group-row">
+        <div class="form-group-col">
+          <label for="addGoodsBrand">品牌 <span class="required">*</span></label>
+          <select id="addGoodsBrand" v-model="addGoodsData.brandid" required>
+            <option value="">请选择品牌</option>
+            <option v-for="brand in activeBrands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
+          </select>
+        </div>
+        <div class="form-group-col">
+          <label for="addGoodsClassify">类型 <span class="required">*</span></label>
+          <select id="addGoodsClassify" v-model="addGoodsData.classifyid" required>
+            <option value="">请选择类型</option>
+            <option v-for="classify in activeClassifies" :key="classify.id" :value="classify.id">{{ classify.name }}</option>
+          </select>
+        </div>
+        <div class="form-group-col">
+          <label for="addGoodsIsGroup">组合售卖 <span class="required">*</span></label>
+          <select id="addGoodsIsGroup" v-model.number="addGoodsData.isgroup" @change="onIsGroupChange" required>
+            <option :value="1">否（单独售卖）</option>
+            <option :value="0">是（套餐）</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="addGoodsPrice">标准售价 <span class="required">*</span></label>
+        <input type="number" step="0.01" id="addGoodsPrice" v-model="addGoodsData.price" placeholder="请输入标准售价" required>
+      </div>
+
+      <div class="form-group" v-if="addGoodsData.isgroup == 0">
+        <label>商品总价（仅供参考）</label>
+        <input type="text" :value="totalGoodsPrice" readonly class="readonly-input">
+      </div>
+
+      <div class="form-group" v-if="addGoodsData.isgroup == 0">
+        <label>包含商品 <span class="required">*</span></label>
+        <table class="included-goods-table" v-if="selectedIncludedGoods.length > 0">
           <thead>
             <tr>
               <th>ID</th>
               <th>商品名称</th>
-              <th>品牌</th>
-              <th>分类</th>
-              <th>价格</th>
-              <th>库存</th>
-              <th>状态</th>
+              <th>标准售价</th>
               <th>操作</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-if="!goodsList || goodsList.length === 0">
-              <td colspan="8" style="text-align: center; padding: 40px;">暂无数据</td>
-            </tr>
-            <tr v-for="goods in paginatedGoods" :key="goods.id" v-else>
+            <tr v-for="(goods, index) in selectedIncludedGoods" :key="goods.id">
               <td>{{ goods.id }}</td>
               <td>{{ goods.name }}</td>
-              <td>{{ getBrandName(goods.brand_id) }}</td>
-              <td>{{ getClassifyName(goods.classify_id) }}</td>
-              <td>￥{{ goods.price }}</td>
-              <td>{{ goods.stock || 0 }}</td>
-              <td>{{ getStatusText(goods.status) }}</td>
-              <td class="action-column">
-                <button
-                  v-if="hasPermission('edit_goods')"
-                  class="edit-btn"
-                  @click="openEditGoodsModal(goods)"
-                >编辑</button>
-                <button
-                  v-if="hasPermission('edit_goods')"
-                  :class="goods.status === 0 ? 'disable-btn' : 'enable-btn'"
-                  @click="toggleGoodsStatus(goods)"
-                >{{ goods.status === 0 ? '禁用' : '启用' }}</button>
+              <td>{{ goods.price }}</td>
+              <td>
+                <button type="button" class="delete-btn" @click="removeIncludedGoods(index)">删除</button>
               </td>
             </tr>
           </tbody>
         </table>
-
-        <!-- 分页 -->
-        <Pagination
-          :current-page="goodsCurrentPage"
-          :total-pages="goodsTotalPages"
-          @page-change="handleGoodsPageChange"
-        />
+        <button type="button" class="add-included-btn" @click="openAddIncludedGoodsModal">+ 新增包含商品</button>
       </div>
 
-      <!-- 品牌管理标签页 -->
-      <div v-show="activeTab === 'brand'" class="tab-content">
-        <div class="section-header">
-          <button v-if="hasPermission('add_brand')" class="add-btn" @click="openAddBrandModal">
-            新增品牌
-          </button>
+      <div class="form-group">
+        <label>属性</label>
+        <div v-for="(row, index) in goodsAttributeRows" :key="index" class="attribute-row">
+          <select v-model="row.attributeId" @change="onRowAttributeChange(index)" class="attr-select">
+            <option value="">请选择属性</option>
+            <option v-for="attr in getAvailableAttributes(index)" :key="attr.id" :value="attr.id">{{ attr.name }}</option>
+          </select>
+          <select v-model="row.valueId" class="value-select">
+            <option value="">请选择属性值</option>
+            <option v-for="value in getAttributeValues(row.attributeId)" :key="value.id" :value="value.id">{{ value.name }}</option>
+          </select>
+          <div class="row-buttons">
+            <button type="button" class="row-add-btn" @click="addAttributeRow" v-if="index === goodsAttributeRows.length - 1">+</button>
+            <button type="button" class="row-remove-btn" @click="removeAttributeRow(index)" v-if="goodsAttributeRows.length > 1">-</button>
+          </div>
         </div>
-
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>品牌名称</th>
-              <th>描述</th>
-              <th>状态</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="!brandList || brandList.length === 0">
-              <td colspan="5" style="text-align: center; padding: 40px;">暂无数据</td>
-            </tr>
-            <tr v-for="brand in brandList" :key="brand.id" v-else>
-              <td>{{ brand.id }}</td>
-              <td>{{ brand.name }}</td>
-              <td>{{ brand.description || '-' }}</td>
-              <td>{{ getStatusText(brand.status) }}</td>
-              <td class="action-column">
-                <button
-                  v-if="hasPermission('edit_brand')"
-                  class="edit-btn"
-                  @click="openEditBrandModal(brand)"
-                >编辑</button>
-                <button
-                  v-if="hasPermission('edit_brand')"
-                  :class="brand.status === 0 ? 'disable-btn' : 'enable-btn'"
-                  @click="toggleBrandStatus(brand)"
-                >{{ brand.status === 0 ? '禁用' : '启用' }}</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
-      <!-- 分类管理标签页 -->
-      <div v-show="activeTab === 'classify'" class="tab-content">
-        <div class="section-header">
-          <button v-if="hasPermission('add_classify')" class="add-btn" @click="openAddClassifyModal">
-            新增分类
-          </button>
+      <div class="form-group">
+        <label>规格</label>
+        <div v-for="(row, index) in goodsSpecRows" :key="index" class="attribute-row">
+          <select v-model="row.attributeId" @change="onRowSpecChange(index)" class="attr-select">
+            <option value="">请选择规格</option>
+            <option v-for="spec in getAvailableSpecs(index)" :key="spec.id" :value="spec.id">{{ spec.name }}</option>
+          </select>
+          <select v-model="row.valueId" class="value-select">
+            <option value="">请选择规格值</option>
+            <option v-for="value in getAttributeValues(row.attributeId)" :key="value.id" :value="value.id">{{ value.name }}</option>
+          </select>
+          <div class="row-buttons">
+            <button type="button" class="row-add-btn" @click="addSpecRow" v-if="index === goodsSpecRows.length - 1">+</button>
+            <button type="button" class="row-remove-btn" @click="removeSpecRow(index)" v-if="goodsSpecRows.length > 1">-</button>
+          </div>
         </div>
+      </div>
+    </Drawer>
 
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>分类名称</th>
-              <th>父级分类</th>
-              <th>描述</th>
-              <th>状态</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="!classifyList || classifyList.length === 0">
-              <td colspan="6" style="text-align: center; padding: 40px;">暂无数据</td>
-            </tr>
-            <tr v-for="classify in classifyList" :key="classify.id" v-else>
-              <td>{{ classify.id }}</td>
-              <td>{{ classify.name }}</td>
-              <td>{{ getParentClassifyName(classify.parent_id) }}</td>
-              <td>{{ classify.description || '-' }}</td>
-              <td>{{ getStatusText(classify.status) }}</td>
-              <td class="action-column">
-                <button
-                  v-if="hasPermission('edit_classify')"
-                  class="edit-btn"
-                  @click="openEditClassifyModal(classify)"
-                >编辑</button>
-                <button
-                  v-if="hasPermission('edit_classify')"
-                  :class="classify.status === 0 ? 'disable-btn' : 'enable-btn'"
-                  @click="toggleClassifyStatus(classify)"
-                >{{ classify.status === 0 ? '禁用' : '启用' }}</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- 编辑商品 Drawer -->
+    <Drawer
+      :show="showEditGoodsDrawer"
+      @close="closeEditGoodsDrawer"
+      @confirm="saveEditGoods"
+      title="编辑商品"
+      cancelText="取消"
+      confirmText="确定"
+    >
+      <div class="form-group">
+        <label for="editGoodsName">名称 <span class="required">*</span></label>
+        <input type="text" id="editGoodsName" v-model="editGoodsData.name" placeholder="请输入商品名称" required>
       </div>
 
-      <!-- 属性管理标签页 -->
-      <div v-show="activeTab === 'attribute'" class="tab-content">
-        <div class="section-header">
-          <button v-if="hasPermission('add_attribute')" class="add-btn" @click="openAddAttributeModal">
-            新增属性
-          </button>
-        </div>
-
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>属性名称</th>
-              <th>描述</th>
-              <th>状态</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-if="!attributeList || attributeList.length === 0">
-              <td colspan="5" style="text-align: center; padding: 40px;">暂无数据</td>
-            </tr>
-            <tr v-for="attr in attributeList" :key="attr.id" v-else>
-              <td>{{ attr.id }}</td>
-              <td>{{ attr.name }}</td>
-              <td>{{ attr.description || '-' }}</td>
-              <td>{{ getStatusText(attr.status) }}</td>
-              <td class="action-column">
-                <button
-                  v-if="hasPermission('edit_attribute')"
-                  class="edit-btn"
-                  @click="openEditAttributeModal(attr)"
-                >编辑</button>
-                <button
-                  v-if="hasPermission('edit_attribute')"
-                  :class="attr.status === 0 ? 'disable-btn' : 'enable-btn'"
-                  @click="toggleAttributeStatus(attr)"
-                >{{ attr.status === 0 ? '禁用' : '启用' }}</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 商品表单弹窗 -->
-    <Modal :show="showGoodsModal" @close="closeGoodsModal" :title="goodsModalTitle">
-      <form @submit.prevent="submitGoodsForm">
-        <div class="form-group">
-          <label for="goodsName">商品名称 <span class="required">*</span></label>
-          <input
-            type="text"
-            id="goodsName"
-            v-model="goodsForm.name"
-            required
-            placeholder="请输入商品名称"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="goodsBrand">品牌 <span class="required">*</span></label>
-          <select id="goodsBrand" v-model="goodsForm.brand_id" required>
+      <div class="form-group-row">
+        <div class="form-group-col">
+          <label for="editGoodsBrand">品牌 <span class="required">*</span></label>
+          <select id="editGoodsBrand" v-model="editGoodsData.brandid" required>
             <option value="">请选择品牌</option>
-            <option v-for="brand in activeBrands" :key="brand.id" :value="brand.id">
-              {{ brand.name }}
-            </option>
+            <option v-for="brand in activeBrands" :key="brand.id" :value="brand.id">{{ brand.name }}</option>
           </select>
         </div>
-
-        <div class="form-group">
-          <label for="goodsClassify">分类 <span class="required">*</span></label>
-          <select id="goodsClassify" v-model="goodsForm.classify_id" required>
-            <option value="">请选择分类</option>
-            <option v-for="classify in activeClassifies" :key="classify.id" :value="classify.id">
-              {{ classify.name }}
-            </option>
+        <div class="form-group-col">
+          <label for="editGoodsClassify">类型 <span class="required">*</span></label>
+          <select id="editGoodsClassify" v-model="editGoodsData.classifyid" required>
+            <option value="">请选择类型</option>
+            <option v-for="classify in activeClassifies" :key="classify.id" :value="classify.id">{{ classify.name }}</option>
           </select>
         </div>
-
-        <div class="form-group">
-          <label for="goodsPrice">价格 <span class="required">*</span></label>
-          <input
-            type="number"
-            id="goodsPrice"
-            v-model="goodsForm.price"
-            required
-            step="0.01"
-            min="0"
-            placeholder="请输入价格"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="goodsStock">库存</label>
-          <input
-            type="number"
-            id="goodsStock"
-            v-model="goodsForm.stock"
-            min="0"
-            placeholder="请输入库存数量"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="goodsDescription">商品描述</label>
-          <textarea
-            id="goodsDescription"
-            v-model="goodsForm.description"
-            rows="4"
-            placeholder="请输入商品描述"
-          ></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">{{ isEditMode ? '更新' : '创建' }}</button>
-          <button type="button" class="cancel-btn" @click="closeGoodsModal">取消</button>
-        </div>
-      </form>
-    </Modal>
-
-    <!-- 品牌表单弹窗 -->
-    <Modal :show="showBrandModal" @close="closeBrandModal" :title="brandModalTitle">
-      <form @submit.prevent="submitBrandForm">
-        <div class="form-group">
-          <label for="brandName">品牌名称 <span class="required">*</span></label>
-          <input
-            type="text"
-            id="brandName"
-            v-model="brandForm.name"
-            required
-            placeholder="请输入品牌名称"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="brandDescription">品牌描述</label>
-          <textarea
-            id="brandDescription"
-            v-model="brandForm.description"
-            rows="4"
-            placeholder="请输入品牌描述"
-          ></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">{{ isEditMode ? '更新' : '创建' }}</button>
-          <button type="button" class="cancel-btn" @click="closeBrandModal">取消</button>
-        </div>
-      </form>
-    </Modal>
-
-    <!-- 分类表单弹窗 -->
-    <Modal :show="showClassifyModal" @close="closeClassifyModal" :title="classifyModalTitle">
-      <form @submit.prevent="submitClassifyForm">
-        <div class="form-group">
-          <label for="classifyName">分类名称 <span class="required">*</span></label>
-          <input
-            type="text"
-            id="classifyName"
-            v-model="classifyForm.name"
-            required
-            placeholder="请输入分类名称"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="classifyParent">父级分类</label>
-          <select id="classifyParent" v-model="classifyForm.parent_id">
-            <option value="">无（顶级分类）</option>
-            <option v-for="classify in parentClassifies" :key="classify.id" :value="classify.id">
-              {{ classify.name }}
-            </option>
+        <div class="form-group-col">
+          <label>组合售卖</label>
+          <select v-model.number="editGoodsData.isgroup" class="disabled-select" disabled>
+            <option :value="1">否（单独售卖）</option>
+            <option :value="0">是（套餐）</option>
           </select>
         </div>
+      </div>
 
-        <div class="form-group">
-          <label for="classifyDescription">分类描述</label>
-          <textarea
-            id="classifyDescription"
-            v-model="classifyForm.description"
-            rows="4"
-            placeholder="请输入分类描述"
-          ></textarea>
-        </div>
+      <div class="form-group">
+        <label for="editGoodsPrice">标准售价 <span class="required">*</span></label>
+        <input type="number" step="0.01" id="editGoodsPrice" v-model="editGoodsData.price" placeholder="请输入标准售价" required>
+      </div>
 
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">{{ isEditMode ? '更新' : '创建' }}</button>
-          <button type="button" class="cancel-btn" @click="closeClassifyModal">取消</button>
+      <div class="form-group" v-if="editGoodsData.isgroup == 0">
+        <label>商品总价（仅供参考）</label>
+        <input type="text" :value="totalGoodsPrice" readonly class="readonly-input">
+      </div>
+
+      <div class="form-group" v-if="editGoodsData.isgroup == 0">
+        <label>包含商品 <span class="required">*</span></label>
+        <table class="included-goods-table" v-if="selectedIncludedGoods.length > 0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>商品名称</th>
+              <th>标准售价</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(goods, index) in selectedIncludedGoods" :key="goods.id">
+              <td>{{ goods.id }}</td>
+              <td>{{ goods.name }}</td>
+              <td>{{ goods.price }}</td>
+              <td>
+                <button type="button" class="delete-btn" @click="removeIncludedGoods(index)">删除</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" class="add-included-btn" @click="openAddIncludedGoodsModal">+ 新增包含商品</button>
+      </div>
+
+      <div class="form-group">
+        <label>属性</label>
+        <div v-for="(row, index) in goodsAttributeRows" :key="index" class="attribute-row">
+          <select v-model="row.attributeId" @change="onRowAttributeChange(index)" class="attr-select">
+            <option value="">请选择属性</option>
+            <option v-for="attr in getAvailableAttributes(index)" :key="attr.id" :value="attr.id">{{ attr.name }}</option>
+          </select>
+          <select v-model="row.valueId" class="value-select">
+            <option value="">请选择属性值</option>
+            <option v-for="value in getAttributeValues(row.attributeId)" :key="value.id" :value="value.id">{{ value.name }}</option>
+          </select>
+          <div class="row-buttons">
+            <button type="button" class="row-add-btn" @click="addAttributeRow" v-if="index === goodsAttributeRows.length - 1">+</button>
+            <button type="button" class="row-remove-btn" @click="removeAttributeRow(index)" v-if="goodsAttributeRows.length > 1">-</button>
+          </div>
         </div>
-      </form>
+      </div>
+
+      <div class="form-group">
+        <label>规格</label>
+        <div v-for="(row, index) in goodsSpecRows" :key="index" class="attribute-row">
+          <select v-model="row.attributeId" @change="onRowSpecChange(index)" class="attr-select">
+            <option value="">请选择规格</option>
+            <option v-for="spec in getAvailableSpecs(index)" :key="spec.id" :value="spec.id">{{ spec.name }}</option>
+          </select>
+          <select v-model="row.valueId" class="value-select">
+            <option value="">请选择规格值</option>
+            <option v-for="value in getAttributeValues(row.attributeId)" :key="value.id" :value="value.id">{{ value.name }}</option>
+          </select>
+          <div class="row-buttons">
+            <button type="button" class="row-add-btn" @click="addSpecRow" v-if="index === goodsSpecRows.length - 1">+</button>
+            <button type="button" class="row-remove-btn" @click="removeSpecRow(index)" v-if="goodsSpecRows.length > 1">-</button>
+          </div>
+        </div>
+      </div>
+    </Drawer>
+
+    <!-- 新增包含商品子弹窗 -->
+    <Modal
+      :show="showAddIncludedGoodsModal"
+      @close="closeAddIncludedGoodsModal"
+      title="新增包含商品"
+      :showCancel="false"
+      :showConfirm="false"
+    >
+      <div class="form-group">
+        <label for="includedGoodsName">商品名称 <span class="required">*</span></label>
+        <select id="includedGoodsName" v-model="addIncludedGoodsData.goods_id" @change="onIncludedGoodsChange" required>
+          <option value="">请选择商品</option>
+          <option v-for="goods in availableGoodsForSelection" :key="goods.id" :value="goods.id">
+            {{ goods.name }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="includedGoodsBrand">品牌</label>
+        <input type="text" id="includedGoodsBrand" v-model="addIncludedGoodsData.brand_name" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label for="includedGoodsClassify">类型</label>
+        <input type="text" id="includedGoodsClassify" v-model="addIncludedGoodsData.classify_name" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label for="includedGoodsAttributes">属性+属性值</label>
+        <input type="text" id="includedGoodsAttributes" v-model="addIncludedGoodsData.attributes" readonly class="readonly-input">
+      </div>
+      <div class="form-group">
+        <label for="includedGoodsPrice">标准售价</label>
+        <input type="text" id="includedGoodsPrice" v-model="addIncludedGoodsData.price" readonly class="readonly-input">
+      </div>
+
+      <template #footer>
+        <button type="button" class="cancel-btn" @click="closeAddIncludedGoodsModal">取消</button>
+        <button type="button" class="save-btn" @click="saveIncludedGoods">保存</button>
+      </template>
     </Modal>
 
-    <!-- 属性表单弹窗 -->
-    <Modal :show="showAttributeModal" @close="closeAttributeModal" :title="attributeModalTitle">
-      <form @submit.prevent="submitAttributeForm">
-        <div class="form-group">
-          <label for="attributeName">属性名称 <span class="required">*</span></label>
-          <input
-            type="text"
-            id="attributeName"
-            v-model="attributeForm.name"
-            required
-            placeholder="请输入属性名称"
-          >
-        </div>
-
-        <div class="form-group">
-          <label for="attributeDescription">属性描述</label>
-          <textarea
-            id="attributeDescription"
-            v-model="attributeForm.description"
-            rows="4"
-            placeholder="请输入属性描述"
-          ></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">{{ isEditMode ? '更新' : '创建' }}</button>
-          <button type="button" class="cancel-btn" @click="closeAttributeModal">取消</button>
-        </div>
-      </form>
-    </Modal>
   </div>
 </template>
 
@@ -453,6 +361,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { usePermissionStore } from '@/store/modules/permission'
 import Modal from '@/components/common/Modal.vue'
+import Drawer from '@/components/common/Drawer.vue'
 import Loading from '@/components/common/Loading.vue'
 import Pagination from '@/components/common/Pagination.vue'
 import {
@@ -461,20 +370,21 @@ import {
   updateGoods,
   updateGoodsStatus,
   getBrands,
-  createBrand,
-  updateBrand,
   getClassifies,
-  createClassify,
-  updateClassify,
   getAttributes,
-  createAttribute,
-  updateAttribute
+  getActiveBrands,
+  getActiveClassifies,
+  getActiveAttributes,
+  getAvailableGoodsForCombo,
+  getIncludedGoods,
+  getGoodsItem
 } from '@/api/goods'
 
 export default {
   name: 'GoodsManagement',
   components: {
     Modal,
+    Drawer,
     Loading,
     Pagination
   },
@@ -482,95 +392,89 @@ export default {
     const permissionStore = usePermissionStore()
     const mounted = ref(false)
     const loading = ref(false)
-    const activeTab = ref('goods')
 
     // 商品相关
     const goodsList = ref([])
+    const displayGoods = ref([])
     const goodsFilters = ref({
+      id: '',
       name: '',
-      brandId: '',
-      classifyId: '',
+      brandid: '',
+      classifyid: '',
       status: ''
     })
     const goodsCurrentPage = ref(1)
     const goodsPageSize = ref(10)
-    const showGoodsModal = ref(false)
-    const goodsForm = ref({
-      name: '',
-      brand_id: '',
-      classify_id: '',
-      price: '',
-      stock: '',
-      description: ''
-    })
-    const isEditMode = ref(false)
-    const editingGoodsId = ref(null)
 
-    // 品牌相关
+    // 品牌和分类
     const brandList = ref([])
-    const activeBrands = ref([])
-    const showBrandModal = ref(false)
-    const brandForm = ref({
-      name: '',
-      description: ''
-    })
-    const editingBrandId = ref(null)
-
-    // 分类相关
     const classifyList = ref([])
+    const activeBrands = ref([])
     const activeClassifies = ref([])
-    const parentClassifies = ref([])
-    const showClassifyModal = ref(false)
-    const classifyForm = ref({
-      name: '',
-      parent_id: '',
-      description: ''
-    })
-    const editingClassifyId = ref(null)
+    const activeAttributes = ref([])
 
-    // 属性相关
-    const attributeList = ref([])
-    const showAttributeModal = ref(false)
-    const attributeForm = ref({
+    // 新增商品 Drawer
+    const showAddGoodsDrawer = ref(false)
+    const addGoodsData = ref({
       name: '',
-      description: ''
+      brandid: '',
+      classifyid: '',
+      isgroup: 1,
+      price: '',
+      attributevalue_ids: []
     })
-    const editingAttributeId = ref(null)
+
+    // 编辑商品 Drawer
+    const showEditGoodsDrawer = ref(false)
+    const editGoodsData = ref({
+      id: '',
+      name: '',
+      brandid: '',
+      classifyid: '',
+      isgroup: 1,
+      price: '',
+      attributevalue_ids: []
+    })
+
+    // 属性和规格行
+    const goodsAttributeRows = ref([{ attributeId: '', valueId: '' }])
+    const goodsSpecRows = ref([{ attributeId: '', valueId: '' }])
+
+    // 组合商品相关
+    const selectedIncludedGoods = ref([])
+    const availableGoodsForCombo = ref([])
+    const showAddIncludedGoodsModal = ref(false)
+    const addIncludedGoodsData = ref({
+      goods_id: '',
+      goods_name: '',
+      brand_name: '',
+      classify_name: '',
+      attributes: '',
+      price: ''
+    })
 
     // 计算属性
-    const goodsModalTitle = computed(() => isEditMode.value ? '编辑商品' : '新增商品')
-    const brandModalTitle = computed(() => isEditMode.value ? '编辑品牌' : '新增品牌')
-    const classifyModalTitle = computed(() => isEditMode.value ? '编辑分类' : '新增分类')
-    const attributeModalTitle = computed(() => isEditMode.value ? '编辑属性' : '新增属性')
+    const brands = computed(() => brandList.value)
+    const classifies = computed(() => classifyList.value)
 
-    const filteredGoods = computed(() => {
-      if (!goodsList.value) return []
+    // 属性列表（classify=0）
+    const attributesList = computed(() => {
+      return activeAttributes.value.filter(attr => attr.classify === 0)
+    })
 
-      return goodsList.value.filter(goods => {
-        if (goodsFilters.value.name && !goods.name.includes(goodsFilters.value.name)) {
-          return false
-        }
-        if (goodsFilters.value.brandId && goods.brand_id != goodsFilters.value.brandId) {
-          return false
-        }
-        if (goodsFilters.value.classifyId && goods.classify_id != goodsFilters.value.classifyId) {
-          return false
-        }
-        if (goodsFilters.value.status !== '' && goods.status != goodsFilters.value.status) {
-          return false
-        }
-        return true
-      })
+    // 规格列表（classify=1）
+    const specsList = computed(() => {
+      return activeAttributes.value.filter(attr => attr.classify === 1)
     })
 
     const goodsTotalPages = computed(() => {
-      return Math.ceil(filteredGoods.value.length / goodsPageSize.value) || 1
+      return Math.ceil(displayGoods.value.length / goodsPageSize.value) || 1
     })
 
     const paginatedGoods = computed(() => {
       const start = (goodsCurrentPage.value - 1) * goodsPageSize.value
       const end = start + goodsPageSize.value
-      return filteredGoods.value.slice(start, end)
+      return displayGoods.value.slice(start, end)
     })
 
     // 权限检查
@@ -604,22 +508,49 @@ export default {
       loading.value = true
       try {
         const response = await getGoods()
-        goodsList.value = response.data || []
+        goodsList.value = response.goods || response.data?.goods || response.data || []
+        displayGoods.value = goodsList.value
       } catch (error) {
         console.error('获取商品列表失败:', error)
+        goodsList.value = []
+        displayGoods.value = []
         alert('获取商品列表失败')
       } finally {
         loading.value = false
       }
     }
 
+    const searchGoods = () => {
+      displayGoods.value = goodsList.value.filter(goods => {
+        if (goodsFilters.value.id && goods.id != goodsFilters.value.id) {
+          return false
+        }
+        if (goodsFilters.value.name && !goods.name.includes(goodsFilters.value.name)) {
+          return false
+        }
+        if (goodsFilters.value.brandid && goods.brandid != goodsFilters.value.brandid) {
+          return false
+        }
+        if (goodsFilters.value.classifyid && goods.classifyid != goodsFilters.value.classifyid) {
+          return false
+        }
+        if (goodsFilters.value.status !== '' && goods.status != goodsFilters.value.status) {
+          return false
+        }
+        return true
+      })
+      goodsCurrentPage.value = 1
+    }
+
     const resetGoodsFilters = () => {
       goodsFilters.value = {
+        id: '',
         name: '',
-        brandId: '',
-        classifyId: '',
+        brandid: '',
+        classifyid: '',
         status: ''
       }
+      displayGoods.value = goodsList.value
       goodsCurrentPage.value = 1
     }
 
@@ -627,365 +558,486 @@ export default {
       goodsCurrentPage.value = page
     }
 
-    const openAddGoodsModal = () => {
-      isEditMode.value = false
-      goodsForm.value = {
-        name: '',
-        brand_id: '',
-        classify_id: '',
-        price: '',
-        stock: '',
-        description: ''
-      }
-      showGoodsModal.value = true
-    }
+    // 计算商品总价
+    const totalGoodsPrice = computed(() => {
+      if (selectedIncludedGoods.value.length === 0) return '0.00'
+      const total = selectedIncludedGoods.value.reduce((sum, goods) => {
+        return sum + parseFloat(goods.price || 0)
+      }, 0)
+      return total.toFixed(2)
+    })
 
-    const openEditGoodsModal = (goods) => {
-      isEditMode.value = true
-      editingGoodsId.value = goods.id
-      goodsForm.value = {
-        name: goods.name,
-        brand_id: goods.brand_id,
-        classify_id: goods.classify_id,
-        price: goods.price,
-        stock: goods.stock || '',
-        description: goods.description || ''
-      }
-      showGoodsModal.value = true
-    }
+    // 可选择的商品列表（排除已选择的）
+    const availableGoodsForSelection = computed(() => {
+      const selectedIds = selectedIncludedGoods.value.map(g => g.id)
+      return availableGoodsForCombo.value.filter(g => !selectedIds.includes(g.id))
+    })
 
-    const closeGoodsModal = () => {
-      showGoodsModal.value = false
-      goodsForm.value = {
-        name: '',
-        brand_id: '',
-        classify_id: '',
-        price: '',
-        stock: '',
-        description: ''
-      }
-    }
-
-    const submitGoodsForm = async () => {
-      loading.value = true
+    // 打开新增商品抽屉
+    const openAddGoodsDrawer = async () => {
       try {
-        const data = {
-          ...goodsForm.value,
-          price: parseFloat(goodsForm.value.price),
-          stock: goodsForm.value.stock ? parseInt(goodsForm.value.stock) : 0
-        }
-
-        if (isEditMode.value) {
-          await updateGoods(editingGoodsId.value, data)
-          alert('商品更新成功')
-        } else {
-          await createGoods(data)
-          alert('商品创建成功')
-        }
-
-        closeGoodsModal()
-        await fetchGoods()
+        const [brandsRes, classifiesRes, attributesRes] = await Promise.all([
+          getActiveBrands(),
+          getActiveClassifies(),
+          getActiveAttributes()
+        ])
+        activeBrands.value = brandsRes.data?.brands || []
+        activeClassifies.value = classifiesRes.data?.classifies || []
+        activeAttributes.value = attributesRes.data?.attributes || []
       } catch (error) {
-        console.error('提交商品表单失败:', error)
-        alert(isEditMode.value ? '商品更新失败' : '商品创建失败')
-      } finally {
-        loading.value = false
+        console.error('获取数据失败:', error)
+        alert('获取数据失败')
+      }
+      showAddGoodsDrawer.value = true
+    }
+
+    // 关闭新增商品抽屉
+    const closeAddGoodsDrawer = () => {
+      showAddGoodsDrawer.value = false
+      addGoodsData.value = {
+        name: '',
+        brandid: '',
+        classifyid: '',
+        isgroup: 1,
+        price: '',
+        attributevalue_ids: []
+      }
+      selectedIncludedGoods.value = []
+      goodsAttributeRows.value = [{ attributeId: '', valueId: '' }]
+      goodsSpecRows.value = [{ attributeId: '', valueId: '' }]
+    }
+
+    // 获取某行可用的属性列表（排除已选择的属性，只返回classify=0的）
+    const getAvailableAttributes = (currentIndex) => {
+      const selectedAttrIds = goodsAttributeRows.value
+        .map((row, index) => index !== currentIndex ? String(row.attributeId) : null)
+        .filter(id => id && id !== '')
+      return attributesList.value.filter(attr => !selectedAttrIds.includes(String(attr.id)))
+    }
+
+    // 获取某行可用的规格列表（排除已选择的规格，只返回classify=1的）
+    const getAvailableSpecs = (currentIndex) => {
+      const selectedSpecIds = goodsSpecRows.value
+        .map((row, index) => index !== currentIndex ? String(row.attributeId) : null)
+        .filter(id => id && id !== '')
+      return specsList.value.filter(spec => !selectedSpecIds.includes(String(spec.id)))
+    }
+
+    // 获取某个属性的属性值列表
+    const getAttributeValues = (attributeId) => {
+      if (!attributeId) return []
+      const attribute = activeAttributes.value.find(attr => attr.id === parseInt(attributeId))
+      return attribute && attribute.values ? attribute.values : []
+    }
+
+    // 当某行的属性选择变化时，清空该行的属性值
+    const onRowAttributeChange = (index) => {
+      goodsAttributeRows.value[index].valueId = ''
+    }
+
+    // 添加新的属性行
+    const addAttributeRow = () => {
+      goodsAttributeRows.value.push({ attributeId: '', valueId: '' })
+    }
+
+    // 删除属性行
+    const removeAttributeRow = (index) => {
+      if (goodsAttributeRows.value.length > 1) {
+        goodsAttributeRows.value.splice(index, 1)
       }
     }
 
-    const toggleGoodsStatus = async (goods) => {
-      const newStatus = goods.status === 0 ? 1 : 0
-      const action = newStatus === 0 ? '启用' : '禁用'
+    // 当某行的规格选择变化时，清空该行的规格值
+    const onRowSpecChange = (index) => {
+      goodsSpecRows.value[index].valueId = ''
+    }
 
-      if (!confirm(`确定要${action}商品"${goods.name}"吗？`)) {
+    // 添加新的规格行
+    const addSpecRow = () => {
+      goodsSpecRows.value.push({ attributeId: '', valueId: '' })
+    }
+
+    // 删除规格行
+    const removeSpecRow = (index) => {
+      if (goodsSpecRows.value.length > 1) {
+        goodsSpecRows.value.splice(index, 1)
+      }
+    }
+
+    // 组合售卖变化处理
+    const onIsGroupChange = async () => {
+      if (addGoodsData.value.isgroup == 0 || editGoodsData.value.isgroup == 0) {
+        try {
+          const excludeId = editGoodsData.value.id || null
+          const response = await getAvailableGoodsForCombo(excludeId)
+          availableGoodsForCombo.value = response.data?.goods || []
+        } catch (error) {
+          console.error('获取可用商品列表失败:', error)
+          alert('获取可用商品列表失败')
+        }
+      } else {
+        selectedIncludedGoods.value = []
+      }
+    }
+
+    // 打开新增包含商品子弹窗
+    const openAddIncludedGoodsModal = () => {
+      addIncludedGoodsData.value = {
+        goods_id: '',
+        goods_name: '',
+        brand_name: '',
+        classify_name: '',
+        attributes: '',
+        price: ''
+      }
+      showAddIncludedGoodsModal.value = true
+    }
+
+    // 包含商品选择变化
+    const onIncludedGoodsChange = () => {
+      const selectedGoods = availableGoodsForCombo.value.find(
+        g => g.id === parseInt(addIncludedGoodsData.value.goods_id)
+      )
+
+      if (selectedGoods) {
+        addIncludedGoodsData.value.goods_name = selectedGoods.name
+        addIncludedGoodsData.value.brand_name = selectedGoods.brand_name
+        addIncludedGoodsData.value.classify_name = selectedGoods.classify_name
+        addIncludedGoodsData.value.attributes = selectedGoods.attributes
+        addIncludedGoodsData.value.price = selectedGoods.price
+      }
+    }
+
+    // 保存包含商品
+    const saveIncludedGoods = () => {
+      if (!addIncludedGoodsData.value.goods_id) {
+        alert('请选择商品')
         return
       }
 
+      const exists = selectedIncludedGoods.value.find(
+        g => g.id === parseInt(addIncludedGoodsData.value.goods_id)
+      )
+      if (exists) {
+        alert('该商品已添加，请勿重复添加')
+        return
+      }
+
+      const selectedGoods = availableGoodsForCombo.value.find(
+        g => g.id === parseInt(addIncludedGoodsData.value.goods_id)
+      )
+      if (selectedGoods) {
+        selectedIncludedGoods.value.push({
+          id: selectedGoods.id,
+          name: selectedGoods.name,
+          brand_name: selectedGoods.brand_name,
+          classify_name: selectedGoods.classify_name,
+          attributes: selectedGoods.attributes,
+          price: selectedGoods.price
+        })
+      }
+
+      closeAddIncludedGoodsModal()
+    }
+
+    // 关闭包含商品子弹窗
+    const closeAddIncludedGoodsModal = () => {
+      showAddIncludedGoodsModal.value = false
+      addIncludedGoodsData.value = {
+        goods_id: '',
+        goods_name: '',
+        brand_name: '',
+        classify_name: '',
+        attributes: '',
+        price: ''
+      }
+    }
+
+    // 删除包含商品
+    const removeIncludedGoods = (index) => {
+      selectedIncludedGoods.value.splice(index, 1)
+    }
+
+    // 保存新增商品
+    const saveAddGoods = async () => {
+      if (!addGoodsData.value.name || !addGoodsData.value.brandid ||
+          !addGoodsData.value.classifyid || !addGoodsData.value.price) {
+        alert('请填写所有必填字段')
+        return
+      }
+
+      if (addGoodsData.value.isgroup == 0 && selectedIncludedGoods.value.length === 0) {
+        alert('组合商品必须至少包含一个子商品')
+        return
+      }
+
+      const attributeValueIds = goodsAttributeRows.value
+        .filter(row => row.attributeId && row.valueId)
+        .map(row => parseInt(row.valueId))
+
+      const specValueIds = goodsSpecRows.value
+        .filter(row => row.attributeId && row.valueId)
+        .map(row => parseInt(row.valueId))
+
+      const attributevalue_ids = [...attributeValueIds, ...specValueIds]
+      const included_goods_ids = selectedIncludedGoods.value.map(g => g.id)
+
+      try {
+        await createGoods({
+          name: addGoodsData.value.name,
+          brandid: parseInt(addGoodsData.value.brandid),
+          classifyid: parseInt(addGoodsData.value.classifyid),
+          isgroup: parseInt(addGoodsData.value.isgroup),
+          price: parseFloat(addGoodsData.value.price),
+          attributevalue_ids: attributevalue_ids,
+          included_goods_ids: included_goods_ids
+        })
+
+        await fetchGoods()
+        closeAddGoodsDrawer()
+        alert('商品添加成功')
+      } catch (error) {
+        console.error('新增商品失败:', error)
+        alert(error.response?.data?.error || '新增商品失败')
+      }
+    }
+
+    // 打开编辑商品抽屉
+    const openEditGoodsDrawer = async (goodsId) => {
+      try {
+        const [brandsRes, classifiesRes, attributesRes, goodsRes] = await Promise.all([
+          getActiveBrands(),
+          getActiveClassifies(),
+          getActiveAttributes(),
+          getGoodsItem(goodsId)
+        ])
+
+        activeBrands.value = brandsRes.data?.brands || []
+        activeClassifies.value = classifiesRes.data?.classifies || []
+        activeAttributes.value = attributesRes.data?.attributes || []
+
+        const goods = goodsRes.data?.goods || goodsRes.data
+        editGoodsData.value = {
+          id: goods.id,
+          name: goods.name,
+          brandid: goods.brandid,
+          classifyid: goods.classifyid,
+          isgroup: goods.isgroup,
+          price: goods.price,
+          attributevalue_ids: goods.attributevalue_ids || []
+        }
+
+        // 根据商品的属性值ID重建goodsAttributeRows和goodsSpecRows数组
+        goodsAttributeRows.value = []
+        goodsSpecRows.value = []
+        if (goods.attributevalue_ids && goods.attributevalue_ids.length > 0) {
+          for (const valueId of goods.attributevalue_ids) {
+            for (const attribute of activeAttributes.value) {
+              const value = attribute.values.find(v => v.id === valueId)
+              if (value) {
+                const row = {
+                  attributeId: attribute.id.toString(),
+                  valueId: value.id.toString()
+                }
+                if (attribute.classify === 0) {
+                  goodsAttributeRows.value.push(row)
+                } else if (attribute.classify === 1) {
+                  goodsSpecRows.value.push(row)
+                }
+                break
+              }
+            }
+          }
+        }
+
+        if (goodsAttributeRows.value.length === 0) {
+          goodsAttributeRows.value = [{ attributeId: '', valueId: '' }]
+        }
+        if (goodsSpecRows.value.length === 0) {
+          goodsSpecRows.value = [{ attributeId: '', valueId: '' }]
+        }
+
+        // 如果是组合商品，加载包含商品数据
+        if (goods.isgroup == 0) {
+          const [availableRes, includedRes] = await Promise.all([
+            getAvailableGoodsForCombo(goodsId),
+            getIncludedGoods(goodsId)
+          ])
+          availableGoodsForCombo.value = availableRes.data?.goods || []
+          selectedIncludedGoods.value = includedRes.data?.included_goods || []
+        } else {
+          selectedIncludedGoods.value = []
+        }
+
+        showEditGoodsDrawer.value = true
+      } catch (error) {
+        console.error('获取商品详情失败:', error)
+        alert('获取商品详情失败')
+      }
+    }
+
+    // 关闭编辑商品抽屉
+    const closeEditGoodsDrawer = () => {
+      showEditGoodsDrawer.value = false
+      editGoodsData.value = {
+        id: '',
+        name: '',
+        brandid: '',
+        classifyid: '',
+        isgroup: 1,
+        price: '',
+        attributevalue_ids: []
+      }
+      selectedIncludedGoods.value = []
+      goodsAttributeRows.value = [{ attributeId: '', valueId: '' }]
+      goodsSpecRows.value = [{ attributeId: '', valueId: '' }]
+    }
+
+    // 保存编辑商品
+    const saveEditGoods = async () => {
+      if (!editGoodsData.value.name || !editGoodsData.value.brandid ||
+          !editGoodsData.value.classifyid || !editGoodsData.value.price) {
+        alert('请填写所有必填字段')
+        return
+      }
+
+      if (editGoodsData.value.isgroup == 0 && selectedIncludedGoods.value.length === 0) {
+        alert('组合商品必须至少包含一个子商品')
+        return
+      }
+
+      const attributeValueIds = goodsAttributeRows.value
+        .filter(row => row.attributeId && row.valueId)
+        .map(row => parseInt(row.valueId))
+
+      const specValueIds = goodsSpecRows.value
+        .filter(row => row.attributeId && row.valueId)
+        .map(row => parseInt(row.valueId))
+
+      const attributevalue_ids = [...attributeValueIds, ...specValueIds]
+      const included_goods_ids = selectedIncludedGoods.value.map(g => g.id)
+
+      try {
+        await updateGoods(editGoodsData.value.id, {
+          name: editGoodsData.value.name,
+          brandid: parseInt(editGoodsData.value.brandid),
+          classifyid: parseInt(editGoodsData.value.classifyid),
+          price: parseFloat(editGoodsData.value.price),
+          attributevalue_ids: attributevalue_ids,
+          included_goods_ids: included_goods_ids
+        })
+
+        await fetchGoods()
+        closeEditGoodsDrawer()
+        alert('商品信息更新成功')
+      } catch (error) {
+        console.error('更新商品失败:', error)
+        alert(error.response?.data?.error || '更新商品失败')
+      }
+    }
+
+    const enableGoods = async (goodsId) => {
       loading.value = true
       try {
-        await updateGoodsStatus(goods.id, newStatus)
-        alert(`商品${action}成功`)
+        await updateGoodsStatus(goodsId, 0)
+        alert('商品启用成功')
         await fetchGoods()
       } catch (error) {
-        console.error(`${action}商品失败:`, error)
-        alert(`${action}商品失败`)
+        console.error('启用商品失败:', error)
+        alert('启用商品失败')
       } finally {
         loading.value = false
       }
+    }
+
+    const disableGoods = async (goodsId) => {
+      loading.value = true
+      try {
+        await updateGoodsStatus(goodsId, 1)
+        alert('商品禁用成功')
+        await fetchGoods()
+      } catch (error) {
+        console.error('禁用商品失败:', error)
+        alert('禁用商品失败')
+      } finally {
+        loading.value = false
+      }
+    }
+
+    const formatGoodsAttributes = (goods) => {
+      if (!goods.attributes) {
+        return ''
+      }
+      if (typeof goods.attributes === 'string') {
+        const str = goods.attributes
+        return str.length > 50 ? str.substring(0, 50) + '...' : str
+      }
+      if (!Array.isArray(goods.attributes) || goods.attributes.length === 0) {
+        return ''
+      }
+      const attrs = goods.attributes.slice(0, 2).map(attr => {
+        return `${attr.attribute_name}:${attr.value_name}`
+      }).join(', ')
+
+      if (goods.attributes.length > 2) {
+        return attrs + '...'
+      }
+      return attrs
+    }
+
+    const getFullAttributes = (goods) => {
+      if (!goods.attributes) {
+        return '无'
+      }
+      if (typeof goods.attributes === 'string') {
+        return goods.attributes || '无'
+      }
+      if (Array.isArray(goods.attributes) && goods.attributes.length === 0) {
+        return '无'
+      }
+      if (Array.isArray(goods.attributes)) {
+        return goods.attributes.map(attr => {
+          return `${attr.attribute_name}:${attr.value_name}`
+        }).join(', ')
+      }
+      return '无'
     }
 
     // 品牌相关方法
     const fetchBrands = async () => {
-      loading.value = true
       try {
         const response = await getBrands()
-        brandList.value = response.data || []
-        activeBrands.value = brandList.value.filter(b => b.status === 0)
+        brandList.value = response.brands || response.data?.brands || response.data || []
       } catch (error) {
         console.error('获取品牌列表失败:', error)
-        alert('获取品牌列表失败')
-      } finally {
-        loading.value = false
-      }
-    }
-
-    const openAddBrandModal = () => {
-      isEditMode.value = false
-      brandForm.value = {
-        name: '',
-        description: ''
-      }
-      showBrandModal.value = true
-    }
-
-    const openEditBrandModal = (brand) => {
-      isEditMode.value = true
-      editingBrandId.value = brand.id
-      brandForm.value = {
-        name: brand.name,
-        description: brand.description || ''
-      }
-      showBrandModal.value = true
-    }
-
-    const closeBrandModal = () => {
-      showBrandModal.value = false
-      brandForm.value = {
-        name: '',
-        description: ''
-      }
-    }
-
-    const submitBrandForm = async () => {
-      loading.value = true
-      try {
-        if (isEditMode.value) {
-          await updateBrand(editingBrandId.value, brandForm.value)
-          alert('品牌更新成功')
-        } else {
-          await createBrand(brandForm.value)
-          alert('品牌创建成功')
-        }
-
-        closeBrandModal()
-        await fetchBrands()
-      } catch (error) {
-        console.error('提交品牌表单失败:', error)
-        alert(isEditMode.value ? '品牌更新失败' : '品牌创建失败')
-      } finally {
-        loading.value = false
-      }
-    }
-
-    const toggleBrandStatus = async (brand) => {
-      const newStatus = brand.status === 0 ? 1 : 0
-      const action = newStatus === 0 ? '启用' : '禁用'
-
-      if (!confirm(`确定要${action}品牌"${brand.name}"吗？`)) {
-        return
-      }
-
-      loading.value = true
-      try {
-        await updateBrand(brand.id, { ...brand, status: newStatus })
-        alert(`品牌${action}成功`)
-        await fetchBrands()
-      } catch (error) {
-        console.error(`${action}品牌失败:`, error)
-        alert(`${action}品牌失败`)
-      } finally {
-        loading.value = false
+        brandList.value = []
       }
     }
 
     // 分类相关方法
     const fetchClassifies = async () => {
-      loading.value = true
       try {
         const response = await getClassifies()
-        classifyList.value = response.data || []
-        activeClassifies.value = classifyList.value.filter(c => c.status === 0)
-        parentClassifies.value = classifyList.value.filter(c => !c.parent_id && c.status === 0)
+        classifyList.value = response.classifies || response.data?.classifies || response.data || []
       } catch (error) {
         console.error('获取分类列表失败:', error)
-        alert('获取分类列表失败')
-      } finally {
-        loading.value = false
-      }
-    }
-
-    const openAddClassifyModal = () => {
-      isEditMode.value = false
-      classifyForm.value = {
-        name: '',
-        parent_id: '',
-        description: ''
-      }
-      showClassifyModal.value = true
-    }
-
-    const openEditClassifyModal = (classify) => {
-      isEditMode.value = true
-      editingClassifyId.value = classify.id
-      classifyForm.value = {
-        name: classify.name,
-        parent_id: classify.parent_id || '',
-        description: classify.description || ''
-      }
-      showClassifyModal.value = true
-    }
-
-    const closeClassifyModal = () => {
-      showClassifyModal.value = false
-      classifyForm.value = {
-        name: '',
-        parent_id: '',
-        description: ''
-      }
-    }
-
-    const submitClassifyForm = async () => {
-      loading.value = true
-      try {
-        const data = {
-          ...classifyForm.value,
-          parent_id: classifyForm.value.parent_id || null
-        }
-
-        if (isEditMode.value) {
-          await updateClassify(editingClassifyId.value, data)
-          alert('分类更新成功')
-        } else {
-          await createClassify(data)
-          alert('分类创建成功')
-        }
-
-        closeClassifyModal()
-        await fetchClassifies()
-      } catch (error) {
-        console.error('提交分类表单失败:', error)
-        alert(isEditMode.value ? '分类更新失败' : '分类创建失败')
-      } finally {
-        loading.value = false
-      }
-    }
-
-    const toggleClassifyStatus = async (classify) => {
-      const newStatus = classify.status === 0 ? 1 : 0
-      const action = newStatus === 0 ? '启用' : '禁用'
-
-      if (!confirm(`确定要${action}分类"${classify.name}"吗？`)) {
-        return
-      }
-
-      loading.value = true
-      try {
-        await updateClassify(classify.id, { ...classify, status: newStatus })
-        alert(`分类${action}成功`)
-        await fetchClassifies()
-      } catch (error) {
-        console.error(`${action}分类失败:`, error)
-        alert(`${action}分类失败`)
-      } finally {
-        loading.value = false
-      }
-    }
-
-    // 属性相关方法
-    const fetchAttributes = async () => {
-      loading.value = true
-      try {
-        const response = await getAttributes()
-        attributeList.value = response.data || []
-      } catch (error) {
-        console.error('获取属性列表失败:', error)
-        alert('获取属性列表失败')
-      } finally {
-        loading.value = false
-      }
-    }
-
-    const openAddAttributeModal = () => {
-      isEditMode.value = false
-      attributeForm.value = {
-        name: '',
-        description: ''
-      }
-      showAttributeModal.value = true
-    }
-
-    const openEditAttributeModal = (attr) => {
-      isEditMode.value = true
-      editingAttributeId.value = attr.id
-      attributeForm.value = {
-        name: attr.name,
-        description: attr.description || ''
-      }
-      showAttributeModal.value = true
-    }
-
-    const closeAttributeModal = () => {
-      showAttributeModal.value = false
-      attributeForm.value = {
-        name: '',
-        description: ''
-      }
-    }
-
-    const submitAttributeForm = async () => {
-      loading.value = true
-      try {
-        if (isEditMode.value) {
-          await updateAttribute(editingAttributeId.value, attributeForm.value)
-          alert('属性更新成功')
-        } else {
-          await createAttribute(attributeForm.value)
-          alert('属性创建成功')
-        }
-
-        closeAttributeModal()
-        await fetchAttributes()
-      } catch (error) {
-        console.error('提交属性表单失败:', error)
-        alert(isEditMode.value ? '属性更新失败' : '属性创建失败')
-      } finally {
-        loading.value = false
-      }
-    }
-
-    const toggleAttributeStatus = async (attr) => {
-      const newStatus = attr.status === 0 ? 1 : 0
-      const action = newStatus === 0 ? '启用' : '禁用'
-
-      if (!confirm(`确定要${action}属性"${attr.name}"吗？`)) {
-        return
-      }
-
-      loading.value = true
-      try {
-        await updateAttribute(attr.id, { ...attr, status: newStatus })
-        alert(`属性${action}成功`)
-        await fetchAttributes()
-      } catch (error) {
-        console.error(`${action}属性失败:`, error)
-        alert(`${action}属性失败`)
-      } finally {
-        loading.value = false
+        classifyList.value = []
       }
     }
 
     // 初始化
     onMounted(async () => {
+      mounted.value = true
       loading.value = true
       try {
         await Promise.all([
           fetchGoods(),
           fetchBrands(),
-          fetchClassifies(),
-          fetchAttributes()
+          fetchClassifies()
         ])
+      } catch (error) {
+        console.error('初始化失败:', error)
       } finally {
-        mounted.value = true
         loading.value = false
       }
     })
@@ -993,110 +1045,197 @@ export default {
     return {
       mounted,
       loading,
-      activeTab,
-      // 商品相关
       goodsList,
+      displayGoods,
       goodsFilters,
       goodsCurrentPage,
       goodsTotalPages,
       paginatedGoods,
-      showGoodsModal,
-      goodsForm,
-      goodsModalTitle,
+      brands,
+      classifies,
+      activeBrands,
+      activeClassifies,
+      showAddGoodsDrawer,
+      showEditGoodsDrawer,
+      addGoodsData,
+      editGoodsData,
+      goodsAttributeRows,
+      goodsSpecRows,
+      selectedIncludedGoods,
+      showAddIncludedGoodsModal,
+      addIncludedGoodsData,
+      availableGoodsForSelection,
+      totalGoodsPrice,
       fetchGoods,
+      searchGoods,
       resetGoodsFilters,
       handleGoodsPageChange,
-      openAddGoodsModal,
-      openEditGoodsModal,
-      closeGoodsModal,
-      submitGoodsForm,
-      toggleGoodsStatus,
-      // 品牌相关
-      brandList,
-      activeBrands,
-      showBrandModal,
-      brandForm,
-      brandModalTitle,
-      openAddBrandModal,
-      openEditBrandModal,
-      closeBrandModal,
-      submitBrandForm,
-      toggleBrandStatus,
-      // 分类相关
-      classifyList,
-      activeClassifies,
-      parentClassifies,
-      showClassifyModal,
-      classifyForm,
-      classifyModalTitle,
-      openAddClassifyModal,
-      openEditClassifyModal,
-      closeClassifyModal,
-      submitClassifyForm,
-      toggleClassifyStatus,
-      // 属性相关
-      attributeList,
-      showAttributeModal,
-      attributeForm,
-      attributeModalTitle,
-      openAddAttributeModal,
-      openEditAttributeModal,
-      closeAttributeModal,
-      submitAttributeForm,
-      toggleAttributeStatus,
-      // 工具函数
-      hasPermission,
-      getStatusText,
-      getBrandName,
-      getClassifyName,
-      getParentClassifyName,
-      isEditMode
+      openAddGoodsDrawer,
+      closeAddGoodsDrawer,
+      openEditGoodsDrawer,
+      closeEditGoodsDrawer,
+      saveAddGoods,
+      saveEditGoods,
+      enableGoods,
+      disableGoods,
+      formatGoodsAttributes,
+      getFullAttributes,
+      getAvailableAttributes,
+      getAvailableSpecs,
+      getAttributeValues,
+      onRowAttributeChange,
+      onRowSpecChange,
+      addAttributeRow,
+      removeAttributeRow,
+      addSpecRow,
+      removeSpecRow,
+      onIsGroupChange,
+      openAddIncludedGoodsModal,
+      closeAddIncludedGoodsModal,
+      onIncludedGoodsChange,
+      saveIncludedGoods,
+      removeIncludedGoods,
+      hasPermission
     }
   }
 }
 </script>
 
 <style scoped>
-.tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #e0e0e0;
-}
-
-.tab-btn {
-  padding: 10px 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  color: #666;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -2px;
-  transition: all 0.3s;
-}
-
-.tab-btn:hover {
-  color: #333;
-}
-
-.tab-btn.active {
-  color: #1890ff;
-  border-bottom-color: #1890ff;
-  font-weight: bold;
-}
-
-.tab-content {
-  padding: 20px 0;
-}
-
-.section-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
+.goods-attributes-cell {
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: help;
 }
 
 .required {
   color: #ff4d4f;
+}
+
+/* 三列布局样式 */
+.form-group-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.form-group-col {
+  flex: 1;
+}
+
+.form-group-col label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group-col select,
+.form-group-col input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* 属性选择三列布局样式 */
+.attribute-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.attribute-row .attr-select {
+  flex: 1;
+  min-width: 120px;
+}
+
+.attribute-row .value-select {
+  flex: 1;
+  min-width: 120px;
+}
+
+.attribute-row .row-buttons {
+  display: flex;
+  gap: 5px;
+  min-width: 70px;
+}
+
+.row-add-btn,
+.row-remove-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.row-add-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.row-add-btn:hover {
+  background-color: #45a049;
+}
+
+.row-remove-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.row-remove-btn:hover {
+  background-color: #da190b;
+}
+
+/* 包含商品表格样式 */
+.included-goods-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+.included-goods-table th,
+.included-goods-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.included-goods-table th {
+  background-color: #f8f9fa;
+  font-weight: 500;
+}
+
+.add-included-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-included-btn:hover {
+  background-color: #45a049;
+}
+
+.readonly-input {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.disabled-select {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
 }
 </style>

@@ -40,21 +40,81 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: 'brands',
+        name: 'Brands',
+        component: () => import('@/views/BrandManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'classifies',
+        name: 'Classifies',
+        component: () => import('@/views/ClassifyManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'attributes',
+        name: 'Attributes',
+        component: () => import('@/views/AttributeManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: 'accounts',
         name: 'Accounts',
         component: () => import('@/views/AccountManagement.vue'),
         meta: { requiresAuth: true }
       },
       {
-        path: 'rbac',
-        name: 'RBAC',
-        component: () => import('@/views/RBACManagement.vue'),
+        path: 'permissions',
+        name: 'Permissions',
+        component: () => import('@/views/PermissionManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'roles',
+        name: 'Roles',
+        component: () => import('@/views/RoleManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'menu_management',
+        name: 'MenuManagement',
+        component: () => import('@/views/MenuManagement.vue'),
         meta: { requiresAuth: true }
       },
       {
         path: 'contract_management',
         name: 'Contracts',
         component: () => import('@/views/ContractManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'activity_management',
+        name: 'Activities',
+        component: () => import('@/views/ActivityManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'activity_template',
+        name: 'ActivityTemplates',
+        component: () => import('@/views/ActivityTemplateManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'approval_flow_type',
+        name: 'ApprovalFlowType',
+        component: () => import('@/views/ApprovalFlowType.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'approval_flow_template',
+        name: 'ApprovalFlowTemplate',
+        component: () => import('@/views/ApprovalFlowTemplate.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'approval_flow_management',
+        name: 'ApprovalFlowManagement',
+        component: () => import('@/views/ApprovalFlowManagement.vue'),
         meta: { requiresAuth: true }
       }
     ]
