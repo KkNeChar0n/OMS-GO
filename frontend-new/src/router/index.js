@@ -140,6 +140,24 @@ const routes = [
         name: 'PaymentCollection',
         component: () => import('@/views/PaymentCollection.vue'),
         meta: { requiresAuth: true }
+      },
+      {
+        path: 'refund_childorders',
+        name: 'RefundChildOrders',
+        component: () => import('@/views/RefundChildOrders.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'refund_management',
+        name: 'RefundManagement',
+        component: () => import('@/views/finance/RefundManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'refund_payment_detail',
+        name: 'RefundPaymentDetail',
+        component: () => import('@/views/finance/RefundPaymentDetail.vue'),
+        meta: { requiresAuth: true }
       }
     ]
   }

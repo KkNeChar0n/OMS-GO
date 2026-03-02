@@ -59,3 +59,8 @@ export function calculateDiscount(data) {
 export function getChildOrders(params) {
   return request.get('/childorders', { params })
 }
+
+// 获取子退费订单列表
+export function getRefundChildOrders(params) {
+  return request.get('/refund-childorders', { params })
+}

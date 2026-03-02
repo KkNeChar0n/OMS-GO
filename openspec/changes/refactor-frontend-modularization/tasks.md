@@ -66,16 +66,16 @@
     - [x] 获取学生未付款订单 GET /api/students/:id/unpaid-orders
   - [x] 4.4.2 子订单接口
     - [x] 获取子订单列表 GET /api/childorders
-  - [ ] 4.4.3 退款订单接口
-    - [ ] 获取退款订单列表 GET /api/refund-orders
-    - [ ] 创建退款订单 POST /api/refund-orders
-    - [ ] 获取退款订单详情 GET /api/refund-orders/:id
-  - [ ] 4.4.4 子退费订单接口
-    - [ ] 获取子退费订单列表 GET /api/refund-childorders
-  - [ ] 4.4.5 退费补充信息接口
-    - [ ] 获取常规退费补充信息列表 GET /api/refund-regular-supplements
-    - [ ] 获取淘宝退费补充信息列表 GET /api/refund-taobao-supplements
-    - [ ] 获取退费支付明细列表 GET /api/refund-payment-details
+  - [x] 4.4.3 退款订单接口
+    - [x] 获取退款订单列表 GET /api/refund-orders
+    - [x] 创建退款订单 POST /api/refund-orders
+    - [x] 获取退款订单详情 GET /api/refund-orders/:id
+  - [x] 4.4.4 子退费订单接口
+    - [x] 获取子退费订单列表 GET /api/refund-childorders
+  - [x] 4.4.5 退费补充信息接口
+    - [x] 获取常规退费补充信息列表 GET /api/refund-regular-supplements
+    - [x] 获取淘宝退费补充信息列表 GET /api/refund-taobao-supplements
+    - [x] 获取退费支付明细列表 GET /api/refund-payment-details
   - [x] 4.4.6 辅助接口
     - [x] 获取启用商品列表 GET /api/goods/active-for-order
     - [x] 获取商品总价 GET /api/goods/:id/total-price
@@ -233,12 +233,12 @@
     - [x] 状态：退费中(0)、已通过(10)、已驳回(20)
     - [x] 查看详情功能（可查看退费订单详细信息、退费子订单列表、补充信息等）
     - [x] 分页功能
-  - [ ] 7.4.4 子退费订单页面（views/RefundChildOrders.vue）
-    - [ ] 子退费订单明细列表展示（表格列：ID、UID、订单ID、商品ID、商品名称、退费金额、状态）
-    - [ ] 筛选功能（ID、UID、订单ID、商品ID、状态）
-    - [ ] 状态：退费中(0)、已通过(10)、已驳回(20)
-    - [ ] 只读查看，无编辑操作
-    - [ ] 分页功能
+  - [x] 7.4.4 子退费订单页面（views/RefundChildOrders.vue）
+    - [x] 子退费订单明细列表展示（表格列：ID、UID、订单ID、商品ID、商品名称、退费金额、状态）
+    - [x] 筛选功能（ID、UID、订单ID、商品ID、状态）
+    - [x] 状态：退费中(0)、已通过(10)、已驳回(20)
+    - [x] 只读查看，无编辑操作
+    - [x] 分页功能
 - [x] 7.5 商品管理页面（views/GoodsManagement.vue）
   - [x] 7.5.1 商品列表展示（表格列：ID、名称、价格、品牌、类型、属性、状态）
   - [x] 7.5.2 筛选功能（ID、名称、品牌、类型、状态）
@@ -368,22 +368,22 @@
     - [x] 显示字段：ID、UID、订单ID、子订单ID、收款ID、收款类型、商品ID、商品名称、分账金额、类型
     - [x] 用于跟踪和管理收款的分账情况
     - [x] 分页功能
-  - [ ] 7.13.3 退费管理页面（views/finance/RefundManagement.vue）
-    - [ ] Tab导航实现（常规退费、淘宝退费）
-    - [ ] 常规退费Tab
-      - [ ] 常规退费记录列表展示
-      - [ ] 筛选功能（ID、UID）
-      - [ ] 显示退费状态和金额
-    - [ ] 淘宝退费Tab
-      - [ ] 淘宝退费记录列表展示
-      - [ ] 显示字段：ID、UID、退款订单ID、支付宝账号、支付宝名称、退费金额、状态
-    - [ ] 分页功能
-  - [ ] 7.13.4 退费明细页面（views/finance/RefundPaymentDetail.vue）
-    - [ ] 退费明细列表展示
-    - [ ] 筛选功能（ID、UID、订单ID、退款ID、收款ID）
-    - [ ] 显示字段：ID、UID、订单ID、退款ID、收款ID、收款类型、收款主体、退费金额、状态
-    - [ ] 提供详细的退费支付明细信息
-    - [ ] 分页功能
+  - [x] 7.13.3 退费管理页面（views/finance/RefundManagement.vue）
+    - [x] Tab导航实现（常规退费、淘宝退费）
+    - [x] 常规退费Tab
+      - [x] 常规退费记录列表展示
+      - [x] 筛选功能（ID、UID、退费ID、付款方、状态）
+      - [x] 显示退费状态和金额
+    - [x] 淘宝退费Tab
+      - [x] 淘宝退费记录列表展示
+      - [x] 显示字段：ID、UID、退款订单ID、支付宝账号、支付宝名称、退费金额、状态
+    - [x] 分页功能
+  - [x] 7.13.4 退费明细页面（views/finance/RefundPaymentDetail.vue）
+    - [x] 退费明细列表展示
+    - [x] 筛选功能（ID、UID、订单ID、退款ID、收款ID、收款类型、状态）
+    - [x] 显示字段：ID、UID、订单ID、退款ID、收款ID、收款类型、收款主体、退费金额、状态
+    - [x] 提供详细的退费支付明细信息
+    - [x] 分页功能
 
 ## 8. 根组件和应用入口
 - [x] 8.1 创建 App.vue 根组件
