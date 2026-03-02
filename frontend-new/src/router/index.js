@@ -34,6 +34,18 @@ const routes = [
         meta: { requiresAuth: true }
       },
       {
+        path: 'childorders',
+        name: 'ChildOrders',
+        component: () => import('@/views/ChildOrders.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'refund_orders',
+        name: 'RefundOrders',
+        component: () => import('@/views/RefundOrders.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
         path: 'goods',
         name: 'Goods',
         component: () => import('@/views/GoodsManagement.vue'),
@@ -115,6 +127,18 @@ const routes = [
         path: 'approval_flow_management',
         name: 'ApprovalFlowManagement',
         component: () => import('@/views/ApprovalFlowManagement.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'separate_account',
+        name: 'SeparateAccount',
+        component: () => import('@/views/SeparateAccount.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'payment_collection',
+        name: 'PaymentCollection',
+        component: () => import('@/views/PaymentCollection.vue'),
         meta: { requiresAuth: true }
       }
     ]

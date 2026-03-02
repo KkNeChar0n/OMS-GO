@@ -136,37 +136,37 @@
   - [x] 4.11.3 创建合同 POST /api/contracts
   - [x] 4.11.4 撤销合同 PUT /api/contracts/:id/revoke
   - [x] 4.11.5 中止合作 PUT /api/contracts/:id/terminate
-- [ ] 4.12 实现财务管理接口（api/finance.js）
-  - [ ] 4.12.1 收款管理接口
-    - [ ] 获取收款列表 GET /api/payment-collections
-    - [ ] 新增收款 POST /api/payment-collections
-    - [ ] 确认到账 PUT /api/payment-collections/:id/confirm
-    - [ ] 删除收款 DELETE /api/payment-collections/:id
-  - [ ] 4.12.2 待认领收款接口
-    - [ ] 获取待认领列表 GET /api/unclaimed
-    - [ ] 认领待认领收款 PUT /api/unclaimed/:id/claim
-    - [ ] 删除待认领 DELETE /api/unclaimed/:id
-    - [ ] 下载待认领Excel模板 GET /api/unclaimed/template
-    - [ ] 导入待认领Excel POST /api/unclaimed/import
-  - [ ] 4.12.3 淘宝收款接口
-    - [ ] 获取淘宝已付款列表 GET /api/taobao-payments
-    - [ ] 新增淘宝收款 POST /api/taobao-payments
-    - [ ] 确认淘宝收款到账 PUT /api/taobao-payments/:id/confirm
-    - [ ] 删除淘宝收款 DELETE /api/taobao-payments/:id
-    - [ ] 获取订单待支付金额 GET /api/orders/:id/pending-amount
-  - [ ] 4.12.4 淘宝待认领接口
-    - [ ] 获取淘宝待认领列表 GET /api/taobao-unclaimed
-    - [ ] 认领淘宝待认领 PUT /api/taobao-unclaimed/:id/claim
-    - [ ] 删除淘宝待认领 DELETE /api/taobao-unclaimed/:id
-    - [ ] 下载淘宝待认领Excel模板 GET /api/taobao-unclaimed/template
-    - [ ] 导入淘宝待认领Excel POST /api/taobao-unclaimed/import
-  - [ ] 4.12.5 分账明细接口
-    - [ ] 获取分账明细列表 GET /api/separate-accounts
-  - [ ] 4.12.6 退费管理接口
-    - [ ] 获取常规退费列表 GET /api/refund-regular-supplements
-    - [ ] 获取淘宝退费列表 GET /api/refund-taobao-supplements
-  - [ ] 4.12.7 退费明细接口
-    - [ ] 获取退费明细列表 GET /api/refund-payment-details
+- [x] 4.12 实现财务管理接口（api/finance.js）
+  - [x] 4.12.1 收款管理接口
+    - [x] 获取收款列表 GET /api/payment-collections
+    - [x] 新增收款 POST /api/payment-collections
+    - [x] 确认到账 PUT /api/payment-collections/:id/confirm
+    - [x] 删除收款 DELETE /api/payment-collections/:id
+  - [x] 4.12.2 待认领收款接口
+    - [x] 获取待认领列表 GET /api/unclaimed
+    - [x] 认领待认领收款 PUT /api/unclaimed/:id/claim
+    - [x] 删除待认领 DELETE /api/unclaimed/:id
+    - [x] 下载待认领Excel模板 GET /api/unclaimed/template
+    - [x] 导入待认领Excel POST /api/unclaimed/import
+  - [x] 4.12.3 淘宝收款接口
+    - [x] 获取淘宝已付款列表 GET /api/taobao-payments
+    - [x] 新增淘宝收款 POST /api/taobao-payments
+    - [x] 确认淘宝收款到账 PUT /api/taobao-payments/:id/confirm
+    - [x] 删除淘宝收款 DELETE /api/taobao-payments/:id
+    - [x] 获取订单待支付金额 GET /api/orders/:id/pending-amount
+  - [x] 4.12.4 淘宝待认领接口
+    - [x] 获取淘宝待认领列表 GET /api/taobao-unclaimed
+    - [x] 认领淘宝待认领 PUT /api/taobao-unclaimed/:id/claim
+    - [x] 删除淘宝待认领 DELETE /api/taobao-unclaimed/:id
+    - [x] 下载淘宝待认领Excel模板 GET /api/taobao-unclaimed/template
+    - [x] 导入淘宝待认领Excel POST /api/taobao-unclaimed/import
+  - [x] 4.12.5 分账明细接口
+    - [x] 获取分账明细列表 GET /api/separate-accounts
+  - [x] 4.12.6 退费管理接口
+    - [x] 获取常规退费列表 GET /api/refund-regular-supplements
+    - [x] 获取淘宝退费列表 GET /api/refund-taobao-supplements
+  - [x] 4.12.7 退费明细接口
+    - [x] 获取退费明细列表 GET /api/refund-payment-details
 
 ## 5. 公共组件开发
 - [x] 5.1 通用组件
@@ -221,18 +221,18 @@
     - [x] 申请退费功能（需要 apply_refund 权限，部分支付或已支付状态可申请）
     - [x] 活动优惠计算功能
     - [x] 分页功能
-  - [ ] 7.4.2 子订单页面（views/ChildOrders.vue）
-    - [ ] 子订单明细列表展示（表格列：ID、订单ID、商品ID、商品名称、应收金额、优惠金额、实收金额、状态）
-    - [ ] 筛选功能（ID、订单ID、商品ID、订单状态）
-    - [ ] 订单状态：草稿(0)、未支付(10)、部分支付(20)、已支付(30)、已作废(99)
-    - [ ] 只读查看，无编辑操作
-    - [ ] 分页功能
-  - [ ] 7.4.3 退费订单页面（views/RefundOrders.vue）
-    - [ ] 退费订单列表展示（表格列：ID、UID、订单ID、退费金额、提交人、提交时间、状态）
-    - [ ] 筛选功能（ID、UID、订单ID）
-    - [ ] 状态：退费中(0)、已通过(10)、已驳回(20)
-    - [ ] 查看详情功能（可查看退费订单详细信息、退费子订单列表、补充信息等）
-    - [ ] 分页功能
+  - [x] 7.4.2 子订单页面（views/ChildOrders.vue）
+    - [x] 子订单明细列表展示（表格列：ID、订单ID、商品ID、商品名称、应收金额、优惠金额、实收金额、状态）
+    - [x] 筛选功能（ID、订单ID、商品ID、订单状态）
+    - [x] 订单状态：草稿(0)、未支付(10)、部分支付(20)、已支付(30)、已作废(99)
+    - [x] 只读查看，无编辑操作
+    - [x] 分页功能
+  - [x] 7.4.3 退费订单页面（views/RefundOrders.vue）
+    - [x] 退费订单列表展示（表格列：ID、UID、订单ID、退费金额、提交人、提交时间、状态）
+    - [x] 筛选功能（ID、UID、订单ID）
+    - [x] 状态：退费中(0)、已通过(10)、已驳回(20)
+    - [x] 查看详情功能（可查看退费订单详细信息、退费子订单列表、补充信息等）
+    - [x] 分页功能
   - [ ] 7.4.4 子退费订单页面（views/RefundChildOrders.vue）
     - [ ] 子退费订单明细列表展示（表格列：ID、UID、订单ID、商品ID、商品名称、退费金额、状态）
     - [ ] 筛选功能（ID、UID、订单ID、商品ID、状态）
@@ -350,7 +350,7 @@
     - [x] 合同状态：草稿、待审批、已通过、已驳回、已撤销、已终止等
     - [x] 支付状态：未支付、部分支付、已支付等
     - [x] 分页功能
-- [ ] 7.13 财务管理模块（4个二级菜单）
+- [x] 7.13 财务管理模块（4个二级菜单）
   - [ ] 7.13.1 收款管理页面（views/finance/PaymentCollection.vue）
     - [ ] Tab导航实现（常规收款、淘宝收款）
     - [ ] 常规收款Tab
@@ -362,12 +362,12 @@
       - [ ] 未认领子Tab：显示待认领的淘宝支付，支持认领和删除操作
       - [ ] 已认领子Tab：显示已认领的淘宝支付记录
       - [ ] 显示字段：付款人、支付宝账号、支付金额、到账时间、商户订单号、状态、认领人等
-  - [ ] 7.13.2 分账明细页面（views/finance/SeparateAccount.vue）
-    - [ ] 分账明细列表展示
-    - [ ] 筛选功能（ID、UID、订单ID、子订单ID）
-    - [ ] 显示字段：ID、UID、订单ID、子订单ID、收款ID、收款类型、商品ID、商品名称、分账金额、类型
-    - [ ] 用于跟踪和管理收款的分账情况
-    - [ ] 分页功能
+  - [x] 7.13.2 分账明细页面（views/finance/SeparateAccount.vue）
+    - [x] 分账明细列表展示
+    - [x] 筛选功能（ID、UID、订单ID、子订单ID）
+    - [x] 显示字段：ID、UID、订单ID、子订单ID、收款ID、收款类型、商品ID、商品名称、分账金额、类型
+    - [x] 用于跟踪和管理收款的分账情况
+    - [x] 分页功能
   - [ ] 7.13.3 退费管理页面（views/finance/RefundManagement.vue）
     - [ ] Tab导航实现（常规退费、淘宝退费）
     - [ ] 常规退费Tab

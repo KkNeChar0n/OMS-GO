@@ -94,7 +94,9 @@ export default {
     }
 
     const isActiveMenu = (menuRoute) => {
-      return route.path.includes(menuRoute)
+      // 精确匹配路由，避免父路由也被选中
+      const normalizedRoute = menuRoute.startsWith('/') ? menuRoute : `/${menuRoute}`
+      return route.path === `/home${normalizedRoute}`
     }
 
     const navigateToMenu = (menuRoute) => {
