@@ -192,6 +192,7 @@ export default {
         await updatePermissionStatus(permissionId, 0)
         alert('权限启用成功')
         await fetchPermissions()
+        await permissionStore.fetchEnabledPermissions()
       } catch (error) {
         console.error('启用权限失败:', error)
         alert('启用权限失败')
@@ -206,6 +207,7 @@ export default {
         await updatePermissionStatus(permissionId, 1)
         alert('权限禁用成功')
         await fetchPermissions()
+        await permissionStore.fetchEnabledPermissions()
       } catch (error) {
         console.error('禁用权限失败:', error)
         alert('禁用权限失败')

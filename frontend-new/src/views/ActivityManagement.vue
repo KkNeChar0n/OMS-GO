@@ -6,7 +6,7 @@
     <div v-if="mounted">
       <div class="page-header">
         <h1>活动管理</h1>
-        <button v-if="hasPermission('add_activity')" class="add-btn" @click="openAddActivityDrawer">新增</button>
+        <button class="add-btn" @click="openAddActivityDrawer">新增</button>
       </div>
 
       <!-- 筛选表单 -->
@@ -70,9 +70,9 @@
             <td>{{ activity.status === 0 ? '启用' : '禁用' }}</td>
             <td class="action-column">
               <button class="edit-btn" @click="openActivityDetailDrawer(activity)">详情</button>
-              <button v-if="hasPermission('edit_activity') && activity.status === 1" class="edit-btn" @click="openEditActivityDrawer(activity)">编辑</button>
-              <button v-if="hasPermission('enable_activity') && activity.status === 1" class="enable-btn" @click="handleUpdateActivityStatus(activity.id, 0)">启用</button>
-              <button v-if="hasPermission('disable_activity') && activity.status === 0" class="disable-btn" @click="handleUpdateActivityStatus(activity.id, 1)">禁用</button>
+              <button v-if="activity.status === 1" class="edit-btn" @click="openEditActivityDrawer(activity)">编辑</button>
+              <button v-if="activity.status === 1" class="enable-btn" @click="handleUpdateActivityStatus(activity.id, 0)">启用</button>
+              <button v-if="activity.status === 0" class="disable-btn" @click="handleUpdateActivityStatus(activity.id, 1)">禁用</button>
             </td>
           </tr>
         </tbody>

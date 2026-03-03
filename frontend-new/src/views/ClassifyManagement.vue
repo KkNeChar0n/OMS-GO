@@ -311,7 +311,7 @@ export default {
         id: classify.id,
         name: classify.name,
         level: classify.level,
-        parent_id: classify.parent_id || ''
+        parent_id: classify.parent_id ? String(classify.parent_id) : ''
       }
       showEditModal.value = true
     }

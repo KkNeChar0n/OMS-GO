@@ -59,10 +59,10 @@
             <td>{{ getStatusText(role.status) }}</td>
             <td>{{ formatDate(role.created_at || role.create_time) }}</td>
             <td class="action-column">
+              <button v-if="!role.is_super_admin" class="edit-btn" @click="openRolePermissionsModal(role)">权限</button>
+              <button v-if="!role.is_super_admin && role.status === 1" class="edit-btn" @click="openEditRoleModal(role)">编辑</button>
               <button v-if="!role.is_super_admin && role.status === 0" class="disable-btn" @click="disableRole(role)">禁用</button>
               <button v-if="!role.is_super_admin && role.status === 1" class="enable-btn" @click="enableRole(role)">启用</button>
-              <button v-if="!role.is_super_admin && role.status === 1" class="edit-btn" @click="openRolePermissionsModal(role)">权限</button>
-              <button v-if="!role.is_super_admin && role.status === 1" class="edit-btn" @click="openEditRoleModal(role)">编辑</button>
             </td>
           </tr>
         </tbody>

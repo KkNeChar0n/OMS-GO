@@ -6,7 +6,7 @@
     <div v-if="mounted">
       <div class="page-header">
         <h1>活动模板</h1>
-        <button v-if="hasPermission('add_activity_template')" class="add-btn" @click="openAddTemplateDrawer">新增模板</button>
+        <button class="add-btn" @click="openAddTemplateDrawer">新增模板</button>
       </div>
 
       <!-- 筛选表单 -->
@@ -68,8 +68,8 @@
             <td>{{ template.status === 0 ? '启用' : '禁用' }}</td>
             <td class="action-column">
               <button class="edit-btn" @click="openDetailDrawer(template)">详情</button>
-              <button v-if="hasPermission('enable_activity_template') && template.status === 1" class="enable-btn" @click="updateTemplateStatus(template.id, 0)">启用</button>
-              <button v-if="hasPermission('disable_activity_template') && template.status === 0" class="disable-btn" @click="updateTemplateStatus(template.id, 1)">禁用</button>
+              <button v-if="template.status === 1" class="enable-btn" @click="updateTemplateStatus(template.id, 0)">启用</button>
+              <button v-if="template.status === 0" class="disable-btn" @click="updateTemplateStatus(template.id, 1)">禁用</button>
             </td>
           </tr>
         </tbody>
