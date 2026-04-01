@@ -150,7 +150,7 @@
 ## 项目结构
 
 ```
-frontend-new/
+frontend/
 ├── public/
 │   └── styles.css              # 全局样式
 ├── src/
@@ -246,7 +246,7 @@ frontend-new/
 ### 开发环境
 
 ```bash
-cd frontend-new
+cd frontend
 npm run dev
 ```
 
@@ -255,7 +255,7 @@ npm run dev
 ### 生产构建
 
 ```bash
-cd frontend-new
+cd frontend
 npm run build
 ```
 

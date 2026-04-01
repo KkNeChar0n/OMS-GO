@@ -50,9 +50,9 @@
 
 | 文档 | 路径 | 说明 |
 |------|------|------|
-| 项目说明 | frontend-new/README.md | 开发指南 |
-| 进度报告 | frontend-new/PROGRESS.md | 详细进度 |
-| 实施总结 | frontend-new/IMPLEMENTATION_SUMMARY.md | 实施细节 |
+| 项目说明 | frontend/README.md | 开发指南 |
+| 进度报告 | frontend/PROGRESS.md | 详细进度 |
+| 实施总结 | frontend/IMPLEMENTATION_SUMMARY.md | 实施细节 |
 | 部署指南 | DEPLOYMENT_GUIDE.md | 运行和部署 |
 | 任务清单 | openspec/changes/.../tasks.md | 任务跟踪 |
 | 项目总结 | PROJECT_COMPLETION_REPORT.md | 本文档 |
@@ -116,7 +116,7 @@
 ✅ API 调用和错误处理
 ```
 
-**代码示例位置**：`frontend-new/src/views/StudentManagement.vue`
+**代码示例位置**：`frontend/src/views/StudentManagement.vue`
 
 ### 2. 可复用的开发模式
 
@@ -182,7 +182,7 @@ cd "D:\claude space\OMS-GO"
 
 **终端 2 - 启动前端**：
 ```bash
-cd "D:\claude space\OMS-GO\frontend-new"
+cd "D:\claude space\OMS-GO\frontend"
 npm run dev
 ```
 
@@ -192,7 +192,7 @@ npm run dev
 
 **构建前端**（如有修改）：
 ```bash
-cd "D:\claude space\OMS-GO\frontend-new"
+cd "D:\claude space\OMS-GO\frontend"
 npm run build
 ```
 
@@ -276,7 +276,7 @@ cd "D:\claude space\OMS-GO"
 
 **步骤 1**：复制学生管理页面
 ```bash
-cd frontend-new/src/views
+cd frontend/src/views
 cp StudentManagement.vue CoachManagement.vue
 ```
 
@@ -316,7 +316,7 @@ OMS-GO/
 ├── internal/               ✅ 后端业务逻辑
 ├── pkg/                    ✅ 公共包
 ├── config/                 ✅ 配置文件
-├── frontend-new/           ✅ 前端源代码
+├── frontend/           ✅ 前端源代码
 │   ├── src/
 │   │   ├── api/           ✅ 7 个 API 模块
 │   │   ├── store/         ✅ 2 个 Store 模块
@@ -373,9 +373,9 @@ OMS-GO/
 
 | 文档 | 路径 | 用途 |
 |------|------|------|
-| 前端说明 | frontend-new/README.md | 前端开发指南 |
-| 进度报告 | frontend-new/PROGRESS.md | 详细进度跟踪 |
-| 实施总结 | frontend-new/IMPLEMENTATION_SUMMARY.md | 实施细节和成果 |
+| 前端说明 | frontend/README.md | 前端开发指南 |
+| 进度报告 | frontend/PROGRESS.md | 详细进度跟踪 |
+| 实施总结 | frontend/IMPLEMENTATION_SUMMARY.md | 实施细节和成果 |
 | 部署指南 | DEPLOYMENT_GUIDE.md | 运行和部署步骤 |
 | OpenSpec 提案 | openspec/changes/.../proposal.md | 项目提案 |
 | 任务清单 | openspec/changes/.../tasks.md | 任务跟踪 |
@@ -423,7 +423,7 @@ OMS-GO/
    - 测试完整 CRUD 功能
 
 3. **查看代码示例**
-   - 参考 `frontend-new/src/views/StudentManagement.vue`
+   - 参考 `frontend/src/views/StudentManagement.vue`
    - 了解开发模式
 
 ### 后续开发

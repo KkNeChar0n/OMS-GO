@@ -66,7 +66,7 @@ OMS-GO/
 │   ├── jwt/                    # JWT 工具
 │   ├── errors/                 # 错误处理
 │   └── response/               # 统一响应格式
-├── frontend-new/               # 前端源代码（Vue 3）
+├── frontend/               # 前端源代码（Vue 3）
 │   └── src/
 │       ├── api/                # API 接口层（13 个模块）
 │       ├── views/              # 页面视图（58 个）
@@ -75,6 +75,8 @@ OMS-GO/
 │       ├── router/             # 路由配置
 │       └── utils/              # 工具函数
 ├── frontend-dist/              # 前端构建产物
+├── scripts/
+│   └── init.sql                # 数据库初始化脚本
 ├── config/
 │   └── config.yaml             # 应用配置
 ├── go.mod
@@ -105,9 +107,15 @@ OMS-GO/
 - MySQL 5.7+
 - Node.js 18+（前端开发）
 
-### 1. 配置数据库
+### 1. 初始化数据库
 
-创建 MySQL 数据库 `charonoms`，然后修改 `config/config.yaml` 中的数据库连接信息：
+执行初始化脚本，自动创建数据库、表结构和预置数据（菜单、权限、管理员账户）：
+
+```bash
+mysql -u root < scripts/init.sql
+```
+
+然后根据实际情况修改 `config/config.yaml` 中的数据库连接信息：
 
 ```yaml
 database:
@@ -115,8 +123,10 @@ database:
   port: 3306
   user: "root"
   password: "你的数据库密码"
-  database: "charonoms"
+  database: "omsgo"
 ```
+
+预置的管理员账户：用户名 `admin`，密码 `admin123`。
 
 ### 2. 启动后端
 
@@ -129,7 +139,7 @@ go run cmd/server/main.go
 ### 3. 启动前端（开发模式）
 
 ```bash
-cd frontend-new
+cd frontend
 npm install
 npm run dev
 ```
@@ -139,7 +149,7 @@ npm run dev
 ### 4. 构建前端（生产部署）
 
 ```bash
-cd frontend-new
+cd frontend
 npm run build
 ```
 
@@ -170,6 +180,44 @@ npm run build
               ┌─────────────┐
               │    MySQL     │
               └─────────────┘
+```
+
+## 菜单结构
+
+```
+学生管理
+  └── 学生管理
+教练管理
+  └── 教练管理
+订单管理
+  ├── 订单管理
+  ├── 子订单管理
+  ├── 退费订单
+  └── 退费子订单
+合同管理
+  └── 合同管理
+商品管理
+  ├── 商品管理
+  ├── 品牌管理
+  ├── 分类管理
+  └── 属性管理
+活动管理
+  ├── 活动管理
+  └── 活动模版
+财务管理
+  ├── 收款管理
+  ├── 分账明细
+  ├── 退费管理
+  └── 退费明细
+审批流管理
+  ├── 审批类型
+  ├── 审批模版
+  └── 审批流管理
+系统设置
+  ├── 账户管理
+  ├── 角色管理
+  ├── 权限管理
+  └── 菜单管理
 ```
 
 ## 认证与权限

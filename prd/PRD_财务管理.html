@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PRD - 财务管理</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 0 auto; padding: 40px 20px; color: #333; line-height: 1.8;">
+
+<h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">财务管理</h1>
+
+<h2>需求目标</h2>
+<p>提供完整的财务收支管理能力，包括常规收款、淘宝收款、待认领款项处理、分账明细查看、退费管理等核心财务功能。实现从收款到分账到退费的完整财务闭环。</p>
+<ul style="margin: 10px 0;">
+  <li><strong>业务目标</strong>：确保每笔收款准确分配到对应子订单，退费流程规范化管理</li>
+  <li><strong>用户价值</strong>：财务人员可高效管理收款、确认到账、处理待认领款项和退费</li>
+  <li><strong>成功指标</strong>：收款分账准确率 100%，退费金额校验通过率 100%</li>
+</ul>
+
+<h2>需求简述</h2>
+
+<h3>产品架构图</h3>
+<div style="padding: 20px; background: #fafafa; border-radius: 8px;">
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="font-weight: bold; font-size: 18px; padding: 8px 12px; background: #e3f2fd; border-radius: 4px; margin-bottom: 8px;">
+      财务管理
+      <ul style="list-style: none; padding-left: 24px; margin-top: 8px;">
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          收款管理
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">常规已收款 — 常规收款记录管理，支持确认到账和删除</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">常规待认领 — 未关联订单的款项，支持Excel导入和认领</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">淘宝已付款 — 淘宝店铺收款管理，支持确认到账</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">淘宝待认领 — 淘宝未关联订单的款项认领</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          分账明细
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">分账记录 — 收款分配到各子订单的明细，支持售卖/冲回/退费类型</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          退费管理
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">常规退费 — 常规退费补充信息列表（含银行账户）</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">淘宝退费 — 淘宝退费补充信息列表（含支付宝账号）</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          退费明细
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">退费收款分配 — 退费从各收款记录中扣除的明细</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<h3>功能清单</h3>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增常规收款</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选择学生和订单，填写收款信息</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">确认到账</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">核验收款并触发分账</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">待认领款项导入</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">通过Excel批量导入待认领款项</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">款项认领</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">将待认领款项关联到具体订单</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">淘宝收款管理</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">淘宝店铺收款的创建和确认</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">分账明细查看</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">查看收款分配到子订单的明细</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费管理</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">常规退费和淘宝退费的信息查看</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费明细查看</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">查看退费从各收款中扣除的明细</td></tr>
+  </tbody>
+</table>
+
+<h2>需求详述</h2>
+
+<h3>4.1 收款管理</h3>
+
+<h4>4.1.1 状态机</h4>
+<svg width="950" height="480" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;display:block;max-width:100%;">
+  <defs>
+    <marker id="arr5" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="950" height="480" fill="white" stroke="#ccc"/>
+  <rect x="0" y="0" width="50" height="480" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="25" y="240" text-anchor="middle" fill="#555" transform="rotate(-90 25 240)">水平泳道</text>
+  <rect x="50" y="0" width="80" height="480" fill="#fafafa" stroke="#ccc"/>
+  <rect x="130" y="0" width="820" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="160" width="820" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="320" width="820" height="160" fill="white" stroke="#ccc"/>
+  <text x="90" y="85" text-anchor="middle" fill="#333">操作</text>
+  <text x="90" y="245" text-anchor="middle" fill="#333">状态</text>
+  <text x="90" y="405" text-anchor="middle" fill="#333">事件</text>
+
+  <rect x="160" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="210" y="85" text-anchor="middle" fill="#222">新增收款</text>
+  <rect x="370" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="420" y="85" text-anchor="middle" fill="#222">确认到账</text>
+  <rect x="570" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="620" y="85" text-anchor="middle" fill="#222">删除收款</text>
+  <rect x="760" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="810" y="85" text-anchor="middle" fill="#222">认领款项</text>
+
+  <rect x="160" y="222" width="90" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="205" y="245" text-anchor="middle" fill="#222">未核验</text>
+  <rect x="350" y="222" width="90" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="395" y="245" text-anchor="middle" fill="#222">已支付</text>
+  <rect x="540" y="222" width="90" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="585" y="245" text-anchor="middle" fill="#222">已删除</text>
+  <rect x="730" y="222" width="90" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="775" y="245" text-anchor="middle" fill="#222">待认领</text>
+  <rect x="870" y="222" width="70" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="905" y="245" text-anchor="middle" fill="#222">已认领</text>
+
+  <rect x="350" y="382" width="120" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="410" y="405" text-anchor="middle" fill="#222">触发分账生成</text>
+  <rect x="570" y="382" width="130" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="635" y="405" text-anchor="middle" fill="#222">更新订单支付状态</text>
+
+  <path d="M 210 98 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr5)"/>
+  <path d="M 420 98 V 150 H 395 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr5)"/>
+  <path d="M 395 258 V 382" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr5)"/>
+  <path d="M 470 400 H 570" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr5)"/>
+  <path d="M 620 98 V 150 H 585 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr5)"/>
+  <path d="M 810 98 V 150 H 905 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr5)"/>
+</svg>
+<p style="color: #666; font-size: 13px;">常规收款状态：未核验(10)→确认到账→已支付(20)+触发分账。待认领状态：待认领(0)→认领→已认领(1)+创建收款+触发分账。</p>
+
+<h4>4.1.2 原型图</h4>
+
+<h5>筛选区（常规已收款）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款ID，精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID，精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款人</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">文本搜索</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款方式</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">微信(0)/支付宝(1)/优利支付(2)/零零购支付(3)/对公转账(9)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">日期选择器</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">按日期筛选，无需时分秒</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">待支付(0)/未核验(10)/已支付(20)</td></tr>
+  </tbody>
+</table>
+
+<h5>表单区（新增常规收款）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">是否必填</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：启用学生列表，选择后自动填充UID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">自动填充</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：该学生的未完全支付订单列表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">待支付金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">自动计算 = 订单实收 - 已支付总额</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款场景</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">线上(0)/线下(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款方式</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">根据付款场景动态变化。线上：微信/支付宝/零零购/优利；线下：微信/支付宝/对公转账/零零购/优利</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数字类型，> 0 且 &le; 待支付金额</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款人</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">否</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款者姓名</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">9</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款主体</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">北京(0)/西安(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">10</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商户订单号</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">条件必填</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">仅线下场景时必填</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">11</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">交易时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">条件必填</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">日期选择器</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">仅线下场景显示，需与订单预计付款时间日期一致</td></tr>
+  </tbody>
+</table>
+
+<h4>4.1.3 逻辑补充</h4>
+<p><strong>确认到账流程：</strong></p>
+<ol style="padding-left: 20px;">
+  <li>校验收款状态为未核验(10)</li>
+  <li>更新收款状态为已支付(20)，记录到账时间</li>
+  <li>触发分账服务：按子订单ID升序，FIFO分配收款金额到各子订单</li>
+  <li>更新订单和子订单的支付状态</li>
+</ol>
+<p><strong>待认领款项认领流程：</strong></p>
+<ol style="padding-left: 20px;">
+  <li>用户选择待认领记录，输入关联的订单ID</li>
+  <li>校验订单状态为未支付(20)或部分支付(30)</li>
+  <li>校验：已有收款 + 待认领金额 &le; 订单实收金额</li>
+  <li>自动创建一条已支付状态的收款记录(payment_collection)</li>
+  <li>触发分账生成</li>
+  <li>更新待认领记录为已认领(1)</li>
+</ol>
+<blockquote style="border-left: 3px solid #90caf9; padding-left: 12px; color: #555;">
+例：财务人员通过Excel导入一笔待认领款项（微信支付，金额500元）。确认该款项对应学生张三的订单(ID=10)后，点击"认领"并输入订单ID=10。系统自动创建收款记录、按FIFO规则将500元分配到订单的各子订单，并更新订单支付状态。
+</blockquote>
+
+<h3>4.2 分账明细</h3>
+
+<h4>4.2.1 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">分账ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">主订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联收款记录ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">常规收款(0)/淘宝收款(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">售卖(0)/冲回(1)/退费(2)</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">分账记录ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">主订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联收款记录ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">常规(0)/淘宝(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">9</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">分账金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">分配给该子订单的金额</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">10</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">售卖(0)/冲回(1)/退费(2)</td></tr>
+  </tbody>
+</table>
+
+<h4>4.2.2 逻辑补充</h4>
+<p><strong>分账计算规则（FIFO）：</strong></p>
+<ol style="padding-left: 20px;">
+  <li>获取收款金额作为待分配余额</li>
+  <li>按子订单ID升序遍历所有子订单</li>
+  <li>计算每个子订单已分配金额和还需金额(实收 - 已分配)</li>
+  <li>本次分配 = MIN(待分配余额, 还需金额)</li>
+  <li>创建分账记录，更新待分配余额</li>
+  <li>余额为0时停止分配</li>
+</ol>
+
+<h3>4.3 退费管理</h3>
+
+<h4>4.3.1 原型图</h4>
+
+<p>页面分为"常规退费"和"淘宝退费"两个Tab。</p>
+
+<h5>列表区（常规退费）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">补充记录ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款方</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退款人名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">银行账户</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退款银行账户</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费金额</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费中(0)/已通过(10)/已驳回(20)</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区（淘宝退费）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">补充记录ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">支付宝账号</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退款支付宝账户</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">支付宝名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">支付宝账户名</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费金额</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费中(0)/已通过(10)/已驳回(20)</td></tr>
+  </tbody>
+</table>
+
+<h3>4.4 退费明细</h3>
+
+<h4>4.4.1 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费明细ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">主订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退款ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">原收款记录ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">常规(0)/淘宝(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费中(0)/已通过(10)/已驳回(20)</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费分配记录ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">主订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退款ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">原收款记录ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">收款类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">常规(0)/淘宝(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">从该收款退费的金额</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费中/已通过/已驳回</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>

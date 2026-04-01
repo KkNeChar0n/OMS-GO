@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PRD - 活动管理</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 0 auto; padding: 40px 20px; color: #333; line-height: 1.8;">
+
+<h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">活动管理</h1>
+
+<h2>需求目标</h2>
+<p>提供营销活动的模板化管理能力，支持活动模板定义和活动实例创建。通过模板管理活动类型（满减/满折/满赠）和商品范围，通过活动实例配置具体的时间和优惠规则，为订单折扣计算提供活动数据支撑。</p>
+<ul style="margin: 10px 0;">
+  <li><strong>业务目标</strong>：实现营销活动的标准化配置，支持灵活的优惠规则定义</li>
+  <li><strong>用户价值</strong>：运营人员可通过模板快速创建活动，配置阶梯优惠规则</li>
+  <li><strong>成功指标</strong>：活动优惠计算准确率 100%，活动商品匹配准确率 100%</li>
+</ul>
+
+<h2>需求简述</h2>
+
+<h3>产品架构图</h3>
+<div style="padding: 20px; background: #fafafa; border-radius: 8px;">
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="font-weight: bold; font-size: 18px; padding: 8px 12px; background: #e3f2fd; border-radius: 4px; margin-bottom: 8px;">
+      活动管理
+      <ul style="list-style: none; padding-left: 24px; margin-top: 8px;">
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          活动管理
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">活动列表 — 活动实例的分页列表，关联模板信息</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">新增/编辑活动 — 选择模板，配置时间和优惠规则</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">活动详情 — 查看活动信息、关联商品和优惠规则</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          活动模版
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">模板列表 — 活动模板的分页列表</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">新增模板 — 定义活动类型、商品选择方式和关联商品</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">模板详情 — 查看模板信息和关联商品</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<h3>功能清单</h3>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动模板列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">展示活动模板信息，支持筛选和启用/禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增活动模板</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">定义活动类型（满减/满折/满赠）、选择方式（按分类/按商品）和关联商品</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">展示活动实例，关联模板信息</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增/编辑活动</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选择模板、配置时间范围和优惠规则（满折类型支持阶梯优惠）</td></tr>
+  </tbody>
+</table>
+
+<h2>需求详述</h2>
+
+<h3>4.1 活动模版管理</h3>
+
+<h4>4.1.1 状态机</h4>
+<p>活动模板只有启用(0)和禁用(1)两种状态，通过独立按钮切换。</p>
+
+<h4>4.1.2 数据关系</h4>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">主表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关系</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联字段</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_template</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_template_goods</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_template.id = activity_template_goods.template_id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板关联的商品/分类</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_template_goods</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">goods</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_template_goods.goods_id = goods.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">按商品选择时关联具体商品</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_template_goods</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">classify</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_template_goods.classify_id = classify.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">按分类选择时关联商品分类</td></tr>
+  </tbody>
+</table>
+
+<h4>4.1.3 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模糊搜索</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：全部/满减(1)/满折(2)/满赠(3)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">全部/启用/禁用</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">满减(1)/满折(2)/满赠(3)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选择方式</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">按类型(1)/按商品(2)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">启用/禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">详情（查看关联商品）、启用/禁用</td></tr>
+  </tbody>
+</table>
+
+<h5>表单区（新增模板）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">是否必填</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">文本输入</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">满减(1)/满折(2)/满赠(3)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选择方式</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">按类型(1)/按商品(2)，影响下方关联内容</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联分类</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是（按类型时）</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多选复选框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：启用的商品分类列表，仅选择方式=按类型时显示</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联商品</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是（按商品时）</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">动态表格</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">弹窗选择商品，仅选择方式=按商品时显示</td></tr>
+  </tbody>
+</table>
+
+<h3>4.2 活动管理</h3>
+
+<h4>4.2.1 状态机</h4>
+<p>活动只有启用(0)和禁用(1)两种状态。禁用状态下才能编辑活动。</p>
+
+<h4>4.2.2 数据关系</h4>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">主表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关系</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联字段</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_template</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity.template_id = activity_template.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动关联模板</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity_detail</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">activity.id = activity_detail.activity_id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动的阶梯优惠规则</td></tr>
+  </tbody>
+</table>
+
+<h4>4.2.3 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模糊搜索</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动模板</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：已有的活动模板列表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">全部/启用/禁用</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联模板</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">从模板继承：满减/满折/满赠</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">开始时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动开始时间</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">结束时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动结束时间</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">启用/禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">详情、编辑（仅禁用状态）、启用/禁用</td></tr>
+  </tbody>
+</table>
+
+<h5>表单区（新增/编辑活动）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">是否必填</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">文本输入</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">活动模板</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：GET /api/activity-templates/active，编辑时不可更改</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">自动填充模板的活动类型</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选择方式</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">自动填充模板的选择方式</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板商品</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读表格</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">展示模板关联的商品列表，分页显示</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">开始时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">时间选择器</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">datetime-local 格式，需要时分</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">结束时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">时间选择器</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">datetime-local 格式，需要时分</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">优惠规则</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是（满折时）</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">动态表格</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">仅满折类型(type=2)显示。每行：数量(threshold_amount)和折扣(discount_value)，可新增/删除行</td></tr>
+  </tbody>
+</table>
+
+<h4>4.2.4 逻辑补充</h4>
+<p><strong>阶梯优惠规则（满折类型）：</strong></p>
+<ul>
+  <li>threshold_amount：满足条件的商品数量（门槛值）</li>
+  <li>discount_value：折扣百分比值，范围0-100。例如：90表示9折（顾客付90%），70表示7折（顾客付70%）</li>
+  <li>支持多条规则，系统按 threshold_amount 降序匹配，取第一个满足的档位</li>
+</ul>
+<blockquote style="border-left: 3px solid #90caf9; padding-left: 12px; color: #555;">
+例：创建一个满折活动，配置3条阶梯规则：满5件7折(threshold=5, discount=70)、满3件8折(threshold=3, discount=80)、满2件9折(threshold=2, discount=90)。若订单中参与活动的商品为4件，匹配到"满3件8折"档位，优惠金额 = 参与商品总价 × (1 - 80/100) = 总价 × 20%。
+</blockquote>
+
+</body>
+</html>

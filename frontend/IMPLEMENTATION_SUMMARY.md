@@ -13,7 +13,7 @@
 ### 1. 项目基础设施 (100%)
 
 ```
-frontend-new/
+frontend/
 ├── package.json          ✅ 依赖配置（Vue 3、Vite、Pinia、Vue Router、Axios）
 ├── vite.config.js        ✅ 开发服务器 + 构建配置
 ├── index.html            ✅ HTML 入口
@@ -274,7 +274,7 @@ frontend-new/
 ### 开发模式
 
 ```bash
-cd frontend-new
+cd frontend
 npm install
 npm run dev
 ```
@@ -386,4 +386,4 @@ hasPermission('delete_coach')
 ---
 
 生成时间: 2026-02-11
-项目路径: `D:\claude space\OMS-GO\frontend-new`
+项目路径: `D:\claude space\OMS-GO\frontend`

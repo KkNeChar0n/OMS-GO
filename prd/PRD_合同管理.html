@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PRD - 合同管理</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 0 auto; padding: 40px 20px; color: #333; line-height: 1.8;">
+
+<h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">合同管理</h1>
+
+<h2>需求目标</h2>
+<p>提供学生合同的全生命周期管理能力，支持首报/续报两种合同类型、线上/线下两种签署形式，以及合同的撤销和中止操作。确保合同数据规范化管理，为财务结算提供合同依据。</p>
+<ul style="margin: 10px 0;">
+  <li><strong>业务目标</strong>：实现合同的标准化管理，覆盖从创建到终止的完整生命周期</li>
+  <li><strong>用户价值</strong>：教务人员可高效管理学生合同，支持多种签署形式和合同类型</li>
+  <li><strong>成功指标</strong>：合同数据完整率 100%，合同状态流转准确率 100%</li>
+</ul>
+
+<h2>需求简述</h2>
+
+<h3>产品架构图</h3>
+<div style="padding: 20px; background: #fafafa; border-radius: 8px;">
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="font-weight: bold; font-size: 18px; padding: 8px 12px; background: #e3f2fd; border-radius: 4px; margin-bottom: 8px;">
+      合同管理
+      <ul style="list-style: none; padding-left: 24px; margin-top: 8px;">
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          合同管理
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">合同列表 — 支持按ID、UID、学生姓名、类型、状态、付款状态筛选</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">新增合同 — 选择学生和合同类型，根据签署形式自动/手动填写</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">合同详情 — 查看合同完整信息，支持撤销和中止操作</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<h3>功能清单</h3>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">支持多条件筛选的分页列表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增合同</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">支持首报/续报类型，线上/线下签署形式</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同详情</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">查看合同详细信息（仅线下签署合同可查看详情）</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">撤销合同</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">待审核状态的合同可撤销</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">中止合作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">已通过的线下签署合同可中止，需填写中止协议</td></tr>
+  </tbody>
+</table>
+
+<h2>需求详述</h2>
+
+<h3>4.1 合同管理</h3>
+
+<h4>4.1.1 状态机</h4>
+<svg width="750" height="480" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;display:block;max-width:100%;">
+  <defs>
+    <marker id="arr3" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="750" height="480" fill="white" stroke="#ccc"/>
+  <rect x="0" y="0" width="50" height="480" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="25" y="240" text-anchor="middle" fill="#555" transform="rotate(-90 25 240)">水平泳道</text>
+  <rect x="50" y="0" width="80" height="480" fill="#fafafa" stroke="#ccc"/>
+  <rect x="130" y="0" width="620" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="160" width="620" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="320" width="620" height="160" fill="white" stroke="#ccc"/>
+  <text x="90" y="85" text-anchor="middle" fill="#333">操作</text>
+  <text x="90" y="245" text-anchor="middle" fill="#333">状态</text>
+  <text x="90" y="405" text-anchor="middle" fill="#333">事件</text>
+
+  <rect x="160" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="210" y="85" text-anchor="middle" fill="#222">新增合同</text>
+  <rect x="370" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="420" y="85" text-anchor="middle" fill="#222">撤销</text>
+  <rect x="580" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="630" y="85" text-anchor="middle" fill="#222">中止合作</text>
+
+  <rect x="160" y="222" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="210" y="245" text-anchor="middle" fill="#222">待审核</text>
+  <rect x="370" y="222" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="420" y="245" text-anchor="middle" fill="#222">已通过</text>
+  <rect x="530" y="222" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="580" y="245" text-anchor="middle" fill="#222">已作废</text>
+  <rect x="660" y="222" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="700" y="245" text-anchor="middle" fill="#222">协议中止</text>
+
+  <rect x="270" y="382" width="120" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="330" y="405" text-anchor="middle" fill="#222">审核通过</text>
+
+  <path d="M 210 98 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr3)"/>
+  <path d="M 260 240 H 330 V 400 H 270" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr3)"/>
+  <path d="M 390 400 H 420 V 258" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr3)"/>
+  <path d="M 420 98 V 150 H 580 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr3)"/>
+  <path d="M 630 98 V 150 H 700 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr3)"/>
+</svg>
+
+<h4>4.1.2 数据关系</h4>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">主表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关系</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联字段</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">contract</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">contract.student_id = student.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同归属学生</td></tr>
+  </tbody>
+</table>
+
+<h4>4.1.3 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数字类型，精确匹配合同ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数字类型，精确匹配学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">文本类型，模糊搜索</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：全部/首报(0)/续报(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：全部/待审核(0)/已通过(50)/已作废(98)/协议中止(99)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：全部/未付款(0)/部分付款(10)/已付款(30)</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同主键ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联学生名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">首报(0)/续报(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">签署形式</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">线上(0)/线下(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同标题</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">decimal(10,2)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">发起方</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">发起方单位</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">9</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">签署方</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">签署方名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">10</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">发起人</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">发起人姓名</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">11</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">待审核/已通过/已作废/协议中止</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">12</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">付款状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">未付款/部分付款/已付款</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">13</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">创建时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同创建时间</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">14</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">详情按钮（仅线下签署合同显示，signature_form=1）</td></tr>
+  </tbody>
+</table>
+
+<h5>表单区（新增合同）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">是否必填</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：GET /api/students/active，选择后自动填充UID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">根据选择的学生自动填充</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：首报(0)/续报(1)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">签署形式</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：线上签署(0)/线下签署(1)，影响合同名称和签署方的生成规则</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是（线上自动）</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">线上签署时自动生成："{UID}+{学生名}+{首/续报}+合同"，线下签署时禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">合同金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数字类型，支持2位小数</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">签署方</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">线上签署时自动填充"小牛编程"，线下签署时用户输入</td></tr>
+  </tbody>
+</table>
+
+<h4>4.1.4 逻辑补充</h4>
+<p><strong>合同名称自动生成规则（线上签署）：</strong></p>
+<blockquote style="border-left: 3px solid #90caf9; padding-left: 12px; color: #555;">
+例：选择学生"张三"（UID=5），合同类型为"首报"，签署形式为"线上签署"。系统自动生成合同名称"5张三首报合同"，签署方自动填充为"小牛编程"。
+</blockquote>
+<p><strong>中止合作：</strong>仅线下签署且已通过(status=50)的合同支持中止操作，需填写"中止协议"文本。中止后合同状态变为"协议中止(99)"。</p>
+<p><strong>撤销：</strong>仅待审核(status=0)的合同可撤销，撤销后合同状态变为"已作废(98)"。</p>
+
+</body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PRD - 订单管理</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 0 auto; padding: 40px 20px; color: #333; line-height: 1.8;">
+
+<h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">订单管理</h1>
+
+<h2>需求目标</h2>
+<p>提供订单全生命周期管理能力，包括订单创建、提交、支付跟踪、退费申请等完整业务流程。支持主订单与子订单的层级管理，以及基于活动规则的折扣自动计算。</p>
+<ul style="margin: 10px 0;">
+  <li><strong>业务目标</strong>：实现订单从创建到完成/作废的全链路管理，支撑财务收款和退费业务</li>
+  <li><strong>用户价值</strong>：教务人员可高效管理订单，系统自动计算折扣和金额，减少人工计算错误</li>
+  <li><strong>成功指标</strong>：订单金额计算准确率 100%，状态流转无异常</li>
+</ul>
+
+<h2>需求简述</h2>
+
+<h3>产品架构图</h3>
+<div style="padding: 20px; background: #fafafa; border-radius: 8px;">
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="font-weight: bold; font-size: 18px; padding: 8px 12px; background: #e3f2fd; border-radius: 4px; margin-bottom: 8px;">
+      订单管理
+      <ul style="list-style: none; padding-left: 24px; margin-top: 8px;">
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          订单管理
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">订单列表 — 主订单分页列表，支持多条件筛选</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">新增/编辑订单 — 选择学生和商品，自动计算折扣和金额</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">订单提交/作废 — 草稿订单可提交或作废</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          子订单管理
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">子订单列表 — 查看订单拆分到每个商品的子订单明细</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          退费订单
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">退费订单列表 — 查看退费申请及审批状态</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          退费子订单
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">退费子订单列表 — 查看退费拆分到每个商品的明细</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<h3>功能清单</h3>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">支持按ID、UID、状态筛选的主订单分页列表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增订单</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选择学生和商品，系统自动匹配活动并计算折扣</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">编辑订单</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">草稿状态订单可编辑商品和金额</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">提交订单</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">草稿订单提交后进入待支付状态</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">作废订单</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">草稿订单作废后不可恢复</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">展示订单拆分到每个商品的子订单明细</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费订单列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">展示退费申请及审批状态</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费子订单列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">展示退费拆分到每个商品的明细</td></tr>
+  </tbody>
+</table>
+
+<h2>需求详述</h2>
+
+<h3>4.1 订单管理</h3>
+
+<h4>4.1.1 状态机</h4>
+<svg width="950" height="480" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;display:block;max-width:100%;">
+  <defs>
+    <marker id="arr4" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="950" height="480" fill="white" stroke="#ccc"/>
+  <rect x="0" y="0" width="50" height="480" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="25" y="240" text-anchor="middle" fill="#555" transform="rotate(-90 25 240)">水平泳道</text>
+  <rect x="50" y="0" width="80" height="480" fill="#fafafa" stroke="#ccc"/>
+  <rect x="130" y="0" width="820" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="160" width="820" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="320" width="820" height="160" fill="white" stroke="#ccc"/>
+  <text x="90" y="85" text-anchor="middle" fill="#333">操作</text>
+  <text x="90" y="245" text-anchor="middle" fill="#333">状态</text>
+  <text x="90" y="405" text-anchor="middle" fill="#333">事件</text>
+
+  <!-- 操作 -->
+  <rect x="150" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="200" y="85" text-anchor="middle" fill="#222">新增订单</text>
+  <rect x="310" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="360" y="85" text-anchor="middle" fill="#222">提交订单</text>
+  <rect x="470" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="520" y="85" text-anchor="middle" fill="#222">作废订单</text>
+  <rect x="780" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="830" y="85" text-anchor="middle" fill="#222">申请退费</text>
+
+  <!-- 状态 -->
+  <rect x="150" y="222" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="190" y="245" text-anchor="middle" fill="#222">草稿</text>
+  <rect x="300" y="222" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="340" y="245" text-anchor="middle" fill="#222">未支付</text>
+  <rect x="440" y="222" width="90" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="485" y="245" text-anchor="middle" fill="#222">部分支付</text>
+  <rect x="590" y="222" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="630" y="245" text-anchor="middle" fill="#222">已支付</text>
+  <rect x="730" y="222" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="770" y="245" text-anchor="middle" fill="#222">退费中</text>
+  <rect x="870" y="222" width="70" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="905" y="245" text-anchor="middle" fill="#222">已作废</text>
+
+  <!-- 事件 -->
+  <rect x="340" y="382" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="390" y="405" text-anchor="middle" fill="#222">部分付款</text>
+  <rect x="510" y="382" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="560" y="405" text-anchor="middle" fill="#222">全额付款</text>
+
+  <!-- 连接 -->
+  <path d="M 200 98 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <path d="M 360 98 V 150 H 340 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <path d="M 520 98 V 150 H 905 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <path d="M 340 258 V 400 H 340" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <path d="M 440 400 H 485 V 258" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <path d="M 340 258 V 350 H 560 V 382" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <path d="M 610 400 H 630 V 258" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr4)"/>
+  <path d="M 830 98 V 150 H 770 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr4)"/>
+</svg>
+<p style="color: #666; font-size: 13px;">订单状态值：草稿(10)、未支付(20)、部分支付(30)、已支付(40)、退费中(50)、已作废(99)。草稿状态可编辑/提交/作废，其他状态不可编辑。</p>
+
+<h4>4.1.2 数据关系</h4>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">主表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关系</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联字段</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">orders</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">orders.student_id = student.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单归属学生</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">orders</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">childorders</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">orders.id = childorders.parentsid</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">主订单包含多个子订单</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">childorders</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">goods</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">childorders.goodsid = goods.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单关联商品</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">orders</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">refund_order</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">orders.id = refund_order.order_id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单的退费记录</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">refund_order</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">refund_order_item</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">refund_order.id = refund_order_item.refund_order_id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费订单的子项明细</td></tr>
+  </tbody>
+</table>
+
+<h4>4.1.3 原型图</h4>
+
+<h5>筛选区（订单列表）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数字类型，精确匹配订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数字类型，精确匹配学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：全部/草稿(10)/未支付(20)/部分支付(30)/已支付(40)/退费中(50)/已作废(99)</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区（订单列表）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单主键ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下单时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单创建时间 create_time</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生姓名 student_name</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">应收金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">amount_receivable，所有商品总价之和</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">优惠金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">discount_amount，红色显示</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">实收金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">amount_received = 应收 - 优惠，加粗显示</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单当前状态文本</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">9</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">草稿状态：编辑(add_order)、作废(void_order)；已提交状态：详情；部分/已支付：申请退费(apply_refund)</td></tr>
+  </tbody>
+</table>
+
+<h5>表单区（新增/编辑订单 - 抽屉组件）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">是否必填</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：GET /api/students/active，选择后自动填充UID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">自动填充</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">预计付款时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">否</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">日期选择器</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">日期类型，无需时分秒</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">应收金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">自动计算 = 所有商品总价之和</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">优惠金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">自动计算 = 活动折扣总额</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">实收金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">-</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">只读文本</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">自动计算 = 应收 - 优惠</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是（至少1个）</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">动态表格</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">每行：商品名称(下拉选择)、品牌(只读)、类型(只读)、属性(只读)、标准售价(只读)、商品总价(只读)、删除按钮。数据源：GET /api/goods/active-for-order</td></tr>
+  </tbody>
+</table>
+
+<h4>4.1.4 逻辑补充</h4>
+<p><strong>折扣计算流程：</strong></p>
+<ol style="padding-left: 20px;">
+  <li>选择商品后，系统自动匹配参与的活动（通过活动模板的商品/分类关联）</li>
+  <li>仅处理满折类型(type=2)的活动</li>
+  <li>按活动详情中的阶梯规则（threshold_amount 降序）匹配折扣档位</li>
+  <li>计算优惠金额 = 参与商品总价 × (1 - discount_value/100)</li>
+  <li>按商品价格比例将优惠金额分摊到各子订单</li>
+</ol>
+<p><strong>主子订单金额关系：</strong></p>
+<ul>
+  <li>主订单.应收 = SUM(子订单.应收)</li>
+  <li>主订单.优惠 = SUM(子订单.优惠)</li>
+  <li>主订单.实收 = SUM(子订单.实收)</li>
+  <li>各子订单.实收 = 子订单.应收 - 子订单.优惠</li>
+</ul>
+<blockquote style="border-left: 3px solid #90caf9; padding-left: 12px; color: #555;">
+例：教务为学生张三(UID=5)创建订单，选择商品A(价格100元)和商品B(价格200元)。系统匹配到一个满折活动（满2件8折），计算优惠金额 = 300 × 0.2 = 60元，其中商品A分摊 60×(100/300)=20元，商品B分摊 60×(200/300)=40元。主订单应收300元、优惠60元、实收240元。
+</blockquote>
+
+<h3>4.2 子订单列表</h3>
+
+<h4>4.2.1 状态机</h4>
+<p>子订单状态跟随主订单状态变更，无独立操作。子订单状态值：草稿(0)、未支付(10)、部分支付(20)、已支付(30)、已作废(99)。</p>
+
+<h4>4.2.2 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单ID，精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">主订单ID(parentsid)，精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID(goodsid)，精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：全部/草稿(0)/未支付(10)/部分支付(20)/已支付(30)/已作废(99)</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单主键ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联主订单ID (parentsid)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联商品ID (goodsid)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联商品名称 (goods_name)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">应收金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单应收 amount_receivable</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">优惠金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单优惠 discount_amount，红色显示</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">实收金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单实收 amount_received，加粗显示</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">子订单状态文本</td></tr>
+  </tbody>
+</table>
+
+<h3>4.3 退费订单列表</h3>
+
+<h4>4.3.1 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费订单ID，精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID，精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联主订单ID，精确匹配</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联主订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">总退费金额，红色加粗显示</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">提交人</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费申请提交者</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">提交时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费申请时间</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">待审批(0)/已通过(10)/已驳回(20)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">详情按钮，打开模态框查看退费详情</td></tr>
+  </tbody>
+</table>
+
+<h3>4.4 退费子订单列表</h3>
+
+<h4>4.4.1 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费子订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">主订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：全部/退费中(0)/已通过(10)/已驳回(20)</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费子订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">UID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">订单ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">主订单ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品编号</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">商品名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费金额</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">红色加粗显示</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">退费中(0)/已通过(10)/已驳回(20)</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>

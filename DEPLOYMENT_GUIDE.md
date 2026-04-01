@@ -14,7 +14,7 @@ OMS-GO/
 ├── internal/               # 后端业务逻辑
 ├── pkg/                    # 公共包
 ├── config/                 # 配置文件
-├── frontend-new/           # 前端源代码
+├── frontend/           # 前端源代码
 │   ├── src/               # Vue 源代码
 │   ├── package.json       # 前端依赖
 │   └── vite.config.js     # 构建配置
@@ -45,7 +45,7 @@ database:
   port: 3306
   user: "root"
   password: "你的密码"  # 修改为实际密码
-  database: "charonoms"
+  database: "omsgo"
 ```
 
 **注意**：确保数据库 `charonoms` 已创建并包含所需的表结构。
@@ -85,7 +85,7 @@ cd D:\claude space\OMS-GO
 
 2. **启动前端开发服务器**（新终端）
 ```bash
-cd D:\claude space\OMS-GO\frontend-new
+cd D:\claude space\OMS-GO\frontend
 npm run dev
 ```
 
@@ -104,7 +104,7 @@ npm run dev
 
 1. **构建前端**（如果有修改）
 ```bash
-cd D:\claude space\OMS-GO\frontend-new
+cd D:\claude space\OMS-GO\frontend
 npm run build
 ```
 
@@ -199,7 +199,7 @@ cd D:\claude space\OMS-GO
 
 **解决**：
 - 确认后端已启动（http://localhost:5001）
-- 检查 `frontend-new/vite.config.js` 中的代理配置
+- 检查 `frontend/vite.config.js` 中的代理配置
 - 检查浏览器控制台的错误信息
 
 ### 3. 登录后 401 错误
@@ -216,7 +216,7 @@ cd D:\claude space\OMS-GO
 
 **解决**：
 ```bash
-cd frontend-new
+cd frontend
 rm -rf node_modules
 npm install
 npm run build
@@ -227,7 +227,7 @@ npm run build
 ### 1. 构建前端
 
 ```bash
-cd frontend-new
+cd frontend
 npm run build
 ```
 
@@ -326,9 +326,9 @@ mysql -u root -p charonoms < charonoms_backup.sql
 
 ### 文档
 
-- **前端 README**: `frontend-new/README.md`
-- **进度报告**: `frontend-new/PROGRESS.md`
-- **实施总结**: `frontend-new/IMPLEMENTATION_SUMMARY.md`
+- **前端 README**: `frontend/README.md`
+- **进度报告**: `frontend/PROGRESS.md`
+- **实施总结**: `frontend/IMPLEMENTATION_SUMMARY.md`
 
 ### 联系方式
 

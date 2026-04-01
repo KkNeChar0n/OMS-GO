@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PRD - 学生管理</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 0 auto; padding: 40px 20px; color: #333; line-height: 1.8;">
+
+<h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">学生管理</h1>
+
+<h2>需求目标</h2>
+<p>提供学生信息的集中管理能力，支持学生基本信息的增删改查、状态管理以及学生与教练的多对多关联维护。帮助教务人员高效管理学生档案，为订单、合同等下游业务提供学生数据基础。</p>
+<ul style="margin: 10px 0;">
+  <li><strong>业务目标</strong>：实现学生信息的标准化管理，确保数据准确性和一致性</li>
+  <li><strong>用户价值</strong>：教务人员可快速查询、筛选学生信息，并维护学生与教练的关联关系</li>
+  <li><strong>成功指标</strong>：学生数据完整率 100%，教练关联准确率 100%</li>
+</ul>
+
+<h2>需求简述</h2>
+
+<h3>产品架构图</h3>
+<div style="padding: 20px; background: #fafafa; border-radius: 8px;">
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="font-weight: bold; font-size: 18px; padding: 8px 12px; background: #e3f2fd; border-radius: 4px; margin-bottom: 8px;">
+      学生管理
+      <ul style="list-style: none; padding-left: 24px; margin-top: 8px;">
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          学生管理
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">学生列表 — 支持按ID、姓名、年级、状态筛选的分页列表</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">新增学生 — 填写学生信息并可选关联教练</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">编辑学生 — 修改学生信息和状态</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">删除学生 — 删除无关联订单的学生</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<h3>功能清单</h3>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生列表</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">支持按ID、姓名、年级、状态筛选的分页列表，展示学生基本信息和关联教练</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增学生</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">填写学生姓名、性别、年级、电话等基本信息，可选关联多个教练</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">编辑学生</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">修改学生基本信息和启用/禁用状态</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">删除学生</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">删除学生记录，存在关联订单时禁止删除</td></tr>
+  </tbody>
+</table>
+
+<h2>需求详述</h2>
+
+<h3>4.1 学生列表</h3>
+
+<h4>4.1.1 状态机</h4>
+<svg width="650" height="480" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;display:block;max-width:100%;">
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="650" height="480" fill="white" stroke="#ccc"/>
+  <rect x="0" y="0" width="50" height="480" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="25" y="240" text-anchor="middle" fill="#555" transform="rotate(-90 25 240)">水平泳道</text>
+  <rect x="50" y="0" width="80" height="480" fill="#fafafa" stroke="#ccc"/>
+  <rect x="130" y="0" width="520" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="160" width="520" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="320" width="520" height="160" fill="white" stroke="#ccc"/>
+  <text x="90" y="85" text-anchor="middle" fill="#333">操作</text>
+  <text x="90" y="245" text-anchor="middle" fill="#333">状态</text>
+  <text x="90" y="405" text-anchor="middle" fill="#333">事件</text>
+
+  <!-- 操作 -->
+  <rect x="160" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="210" y="85" text-anchor="middle" fill="#222">新增学生</text>
+  <rect x="340" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="390" y="85" text-anchor="middle" fill="#222">编辑状态</text>
+  <rect x="520" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="570" y="85" text-anchor="middle" fill="#222">删除学生</text>
+
+  <!-- 状态 -->
+  <rect x="160" y="222" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="210" y="245" text-anchor="middle" fill="#222">启用</text>
+  <rect x="340" y="222" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="390" y="245" text-anchor="middle" fill="#222">禁用</text>
+  <rect x="520" y="222" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="570" y="245" text-anchor="middle" fill="#222">已删除</text>
+
+  <!-- 事件 -->
+  <rect x="240" y="382" width="120" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="300" y="405" text-anchor="middle" fill="#222">状态变更成功</text>
+
+  <!-- 连接 -->
+  <path d="M 210 98 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr)"/>
+  <path d="M 260 240 H 340" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr)"/>
+  <path d="M 340 240 H 260" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr)"/>
+  <path d="M 390 258 V 382" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr)"/>
+  <path d="M 570 98 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr)"/>
+</svg>
+<p style="color: #666; font-size: 13px;">说明：学生新增后默认为启用状态，可通过编辑表单切换启用/禁用。存在关联订单的学生不可删除。</p>
+
+<h4>4.1.2 数据关系</h4>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">主表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关系</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联字段</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">sex</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student.sex_id = sex.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生性别引用性别字典表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">grade</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student.grade_id = grade.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生年级引用年级字典表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student_coach</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student.id = student_coach.student_id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生与教练的多对多关联中间表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student_coach</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">coach</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">student_coach.coach_id = coach.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联教练信息</td></tr>
+  </tbody>
+</table>
+
+<h4>4.1.3 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数字类型，精确匹配学生ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">文本类型，模糊搜索，不区分大小写</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">年级</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：硬编码枚举（一年级至初三，共9个选项）</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：全部/启用(0)/禁用(1)</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生主键ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">字段 student_name</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">性别</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">通过 sex_id 映射为"男"/"女"</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">年级</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">通过 grade_id 映射为年级名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">电话</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">学生联系电话</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">教练姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">关联教练名称，多个用逗号分隔，无关联时显示"-"</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">0=启用，1=禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">8</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">编辑按钮（权限：edit_student），删除按钮（权限：delete_student，需二次确认，存在关联订单时禁止删除）</td></tr>
+  </tbody>
+</table>
+
+<h5>表单区（新增/编辑）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">是否必填</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">姓名</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">文本输入，对应后端字段 student_name</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">性别</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">硬编码选项：男(1)、女(2)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">年级</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">硬编码选项：一年级(1)至初三(9)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">电话</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">文本输入，存储联系电话</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">教练</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">否</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多选复选框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：GET /api/coaches/active 获取启用状态的教练列表，可选0个或多个</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">否</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">选项：启用(0)/禁用(1)，默认启用</td></tr>
+  </tbody>
+</table>
+
+<h4>4.1.4 逻辑补充</h4>
+<p><strong>删除限制：</strong>当学生存在关联订单时，后端返回错误"无法删除，该学生存在关联订单"，前端提示用户。只有无关联订单的学生才可被删除。</p>
+<p><strong>教练关联：</strong>新增时可选择多个教练，通过 student_coach 中间表维护多对多关系。编辑时同样支持修改教练关联。</p>
+<blockquote style="border-left: 3px solid #90caf9; padding-left: 12px; color: #555;">
+例：教务老师新增学生"张三"，选择性别"男"、年级"初一"、电话"13800001111"，关联教练"李老师"和"王老师"。系统创建学生记录并在 student_coach 表中写入两条关联记录。后续若张三产生了订单，则无法删除该学生。
+</blockquote>
+
+</body>
+</html>

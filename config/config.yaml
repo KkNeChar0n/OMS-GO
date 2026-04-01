@@ -6,8 +6,8 @@ database:
   host: "localhost"
   port: 3306
   user: "root"
-  password: "qweasd123Q!"
-  database: "charonoms"
+  password: ""
+  database: "omsgo"
   charset: "utf8mb4"
   max_idle_conns: 10
   max_open_conns: 100

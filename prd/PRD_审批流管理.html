@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>PRD - 审批流管理</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 0 auto; padding: 40px 20px; color: #333; line-height: 1.8;">
+
+<h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">审批流管理</h1>
+
+<h2>需求目标</h2>
+<p>提供灵活的审批工作流引擎，支持审批类型定义、流程模板配置（多节点+会签/或签）、审批实例管理和抄送机制。为退费等业务提供标准化的审批流程支撑。</p>
+<ul style="margin: 10px 0;">
+  <li><strong>业务目标</strong>：实现审批流程的标准化和可配置化，支持多级审批和灵活的审批策略</li>
+  <li><strong>用户价值</strong>：管理员可自定义审批流程模板，审批人可高效处理审批任务</li>
+  <li><strong>成功指标</strong>：审批流程流转准确率 100%，会签/或签逻辑正确率 100%</li>
+</ul>
+
+<h2>需求简述</h2>
+
+<h3>产品架构图</h3>
+<div style="padding: 20px; background: #fafafa; border-radius: 8px;">
+  <ul style="list-style: none; padding-left: 0;">
+    <li style="font-weight: bold; font-size: 18px; padding: 8px 12px; background: #e3f2fd; border-radius: 4px; margin-bottom: 8px;">
+      审批流管理
+      <ul style="list-style: none; padding-left: 24px; margin-top: 8px;">
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          审批类型
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">类型管理 — 审批流类型的定义和启用/禁用</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          审批模版
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">模板管理 — 审批流程模板配置，包含多个审批节点和抄送人员</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">节点配置 — 每个节点可设置会签/或签类型和多个审批人</li>
+          </ul>
+        </li>
+        <li style="border-left: 2px solid #90caf9; padding: 6px 12px; margin-bottom: 8px; font-weight: bold; font-size: 16px;">
+          审批流管理
+          <ul style="list-style: none; padding-left: 24px; margin-top: 6px; font-weight: normal; font-size: 14px;">
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">我发起的 — 查看和撤销自己发起的审批</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">待我审批 — 处理待审批任务（通过/驳回）</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">处理完成 — 查看已处理的审批记录</li>
+            <li style="border-left: 2px solid #c8e6c9; padding: 4px 12px; margin-bottom: 4px;">抄送我的 — 查看被抄送的审批流</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+<h3>功能清单</h3>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批类型管理</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批流类型的创建和启用/禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批模板管理</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">流程模板的创建、详情查看和启用/禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">发起审批</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">基于模板创建审批流实例</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批处理</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批人执行通过/驳回操作</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">撤销审批</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">新增</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">发起人撤销待审批状态的审批流</td></tr>
+  </tbody>
+</table>
+
+<h2>需求详述</h2>
+
+<h3>4.1 审批类型管理</h3>
+
+<h4>4.1.1 状态机</h4>
+<p>审批类型只有启用(0)和禁用(1)两种状态，通过独立按钮切换。</p>
+
+<h4>4.1.2 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">类型名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：已有的审批类型列表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">全部/启用/禁用</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批类型ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批类型名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">启用/禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">启用/禁用按钮</td></tr>
+  </tbody>
+</table>
+
+<h3>4.2 审批模版管理</h3>
+
+<h4>4.2.1 状态机</h4>
+<p>审批模板只有启用(0)和禁用(1)两种状态。<strong>关键约束：</strong>同一审批流类型下仅允许一个启用的模板，启用新模板时自动禁用该类型下的其他模板。</p>
+
+<h4>4.2.2 数据关系</h4>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">主表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联表</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关系</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">关联字段</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">approval_flow_template</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">approval_flow_type</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多对一</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">template.approval_flow_type_id = type.id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板归属审批类型</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">approval_flow_template</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">approval_flow_template_node</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">template.id = node.template_id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板包含多个审批节点</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">approval_flow_template_node</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">approval_node_useraccount</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">node.id = user.node_id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">每个节点配置多个审批人</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">approval_flow_template</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">approval_copy_useraccount</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">一对多</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">template.id = copy.approval_flow_template_id</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板的抄送人员配置</td></tr>
+  </tbody>
+</table>
+
+<h4>4.2.3 原型图</h4>
+
+<h5>筛选区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">精确匹配</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批流类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：审批类型列表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模糊搜索</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">全部/启用/禁用</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批流类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">所属审批类型名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">创建人</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">创建者用户名</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">创建时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">创建时间</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">启用/禁用</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">详情（查看节点和人员配置）、启用/禁用</td></tr>
+  </tbody>
+</table>
+
+<h5>表单区（新增模板）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">是否必填</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">元素类型</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">模板名称</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">输入框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">文本输入</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批流类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：启用的审批类型列表</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批节点</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">是（至少1个）</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">动态区块</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">每个节点包含：节点名称(必填)、审批类型(会签0/或签1,必填)、审批人员(至少1人,多选)。可动态增删节点</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">抄送人员</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">否</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">多选下拉框</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">数据源：启用的用户账户列表，可选0个或多个</td></tr>
+  </tbody>
+</table>
+
+<h3>4.3 审批流管理</h3>
+
+<h4>4.3.1 状态机</h4>
+<svg width="750" height="480" xmlns="http://www.w3.org/2000/svg" style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:13px;display:block;max-width:100%;">
+  <defs>
+    <marker id="arr6" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#333"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="750" height="480" fill="white" stroke="#ccc"/>
+  <rect x="0" y="0" width="50" height="480" fill="#f5f5f5" stroke="#ccc"/>
+  <text x="25" y="240" text-anchor="middle" fill="#555" transform="rotate(-90 25 240)">水平泳道</text>
+  <rect x="50" y="0" width="80" height="480" fill="#fafafa" stroke="#ccc"/>
+  <rect x="130" y="0" width="620" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="160" width="620" height="160" fill="white" stroke="#ccc"/>
+  <rect x="130" y="320" width="620" height="160" fill="white" stroke="#ccc"/>
+  <text x="90" y="85" text-anchor="middle" fill="#333">操作</text>
+  <text x="90" y="245" text-anchor="middle" fill="#333">状态</text>
+  <text x="90" y="405" text-anchor="middle" fill="#333">事件</text>
+
+  <rect x="160" y="62" width="100" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="210" y="85" text-anchor="middle" fill="#222">发起审批</text>
+  <rect x="330" y="62" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="370" y="85" text-anchor="middle" fill="#222">通过</text>
+  <rect x="460" y="62" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="500" y="85" text-anchor="middle" fill="#222">驳回</text>
+  <rect x="600" y="62" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="640" y="85" text-anchor="middle" fill="#222">撤销</text>
+
+  <rect x="160" y="222" width="90" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="205" y="245" text-anchor="middle" fill="#222">待审批</text>
+  <rect x="330" y="222" width="90" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="375" y="245" text-anchor="middle" fill="#222">已通过</text>
+  <rect x="490" y="222" width="90" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="535" y="245" text-anchor="middle" fill="#222">已驳回</text>
+  <rect x="650" y="222" width="80" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="690" y="245" text-anchor="middle" fill="#222">已撤销</text>
+
+  <rect x="230" y="382" width="130" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="295" y="405" text-anchor="middle" fill="#222">所有节点通过</text>
+  <rect x="430" y="382" width="130" height="36" rx="6" fill="#dde8f5" stroke="#aaa"/>
+  <text x="495" y="405" text-anchor="middle" fill="#222">任意节点驳回</text>
+
+  <path d="M 210 98 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr6)"/>
+  <path d="M 250 240 V 400 H 230" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr6)"/>
+  <path d="M 360 400 H 375 V 258" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr6)"/>
+  <path d="M 250 240 V 350 H 495 V 382" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr6)"/>
+  <path d="M 535 258 V 350 H 495 V 382" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr6)"/>
+  <path d="M 640 98 V 150 H 690 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr6)"/>
+  <path d="M 500 98 V 150 H 535 V 222" stroke="#333" fill="none" stroke-width="1.5" marker-end="url(#arr6)"/>
+</svg>
+<p style="color: #666; font-size: 13px;">审批流状态：待审批(0)、已通过(10)、已驳回(20)、已撤销(99)。审批逐节点流转，所有节点通过则整体通过，任意节点驳回则整体驳回。</p>
+
+<h4>4.3.2 原型图</h4>
+
+<p>页面分为4个Tab："我发起的"、"待我审批"、"处理完成"、"抄送我的"。</p>
+
+<h5>列表区（我发起的）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批流实例ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批流类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批类型名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">当前步骤</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">当前执行到第几个节点(step)</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">创建时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">发起时间</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">状态</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">待审批/已通过/已驳回/已撤销</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">完成时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批完成时间（若已完成）</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">撤销（仅待审批状态显示）</td></tr>
+  </tbody>
+</table>
+
+<h5>列表区（待我审批）</h5>
+<table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+  <thead>
+    <tr style="background: #f5f5f5;"><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">编号</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">名称</th><th style="border: 1px solid #e0e0e0; padding: 10px 12px; text-align: left;">说明</th></tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">1</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批节点实例ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">2</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批流ID</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">所属审批流实例ID</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">3</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批流类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">审批类型名称</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">4</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">节点类型</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">会签/或签</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">5</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">节点排序</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">该节点在流程中的顺序</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">6</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">创建时间</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">任务创建时间</td></tr>
+    <tr><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">7</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">操作</td><td style="border: 1px solid #e0e0e0; padding: 10px 12px;">详情（打开审批详情抽屉，含通过/驳回按钮）</td></tr>
+  </tbody>
+</table>
+
+<h4>4.3.3 逻辑补充</h4>
+<p><strong>会签节点(type=0)：</strong></p>
+<ul>
+  <li>通过条件：该节点所有审批人都审批且都通过</li>
+  <li>驳回条件：任意一人驳回 → 删除该节点其他待审批人员 → 节点驳回 → 整个审批流驳回</li>
+</ul>
+<p><strong>或签节点(type=1)：</strong></p>
+<ul>
+  <li>通过条件：任意一人通过 → 删除该节点其他待审批人员 → 节点通过 → 流转下一节点</li>
+  <li>驳回条件：所有人都审批且都驳回 → 节点驳回 → 整个审批流驳回</li>
+</ul>
+<p><strong>节点流转规则：</strong></p>
+<ol style="padding-left: 20px;">
+  <li>当前节点通过后，step+1，系统检查是否还有下一个节点</li>
+  <li>有下一节点：创建新的节点实例和审批人记录，继续审批</li>
+  <li>无下一节点：整个审批流标记为已通过(10)，记录完成时间，触发业务回调（如退费处理）</li>
+</ol>
+<p><strong>抄送机制：</strong>审批流创建时根据模板配置自动生成抄送记录，抄送人可在"抄送我的"标签页查看审批详情，但无审批权限。</p>
+<blockquote style="border-left: 3px solid #90caf9; padding-left: 12px; color: #555;">
+例：创建退费审批模板，配置2个节点：节点1"财务审核"（或签，审批人：财务A和财务B），节点2"总监审批"（会签，审批人：总监C）。发起退费审批后，财务A或财务B任一人通过即可流转到节点2；节点2需要总监C通过后，整个审批流才完成，触发退费执行。
+</blockquote>
+
+</body>
+</html>

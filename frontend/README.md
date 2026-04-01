@@ -14,7 +14,7 @@
 ## 项目结构
 
 ```
-frontend-new/
+frontend/
 ├── public/                    # 静态资源
 │   └── styles.css            # 全局样式
 ├── src/                       # 源代码
